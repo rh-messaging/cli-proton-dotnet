@@ -32,7 +32,17 @@ namespace ClientLib
         /// <returns>build receiver link</returns>
         private IReceiver PrepareReceiverLink(ReceiverOptions options)
         {
-            IReceiver receiver = connection.OpenReceiver(options.Address);
+            Apache.Qpid.Proton.Client.ReceiverOptions receiverOptions = new Apache.Qpid.Proton.Client.ReceiverOptions();
+            if (options.RecvBrowse)
+                receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
+
+            bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+            IReceiver receiver;
+            if (tx_batch_flag) {
+                receiver = this.session.OpenReceiver(options.Address, receiverOptions);
+            } else {
+                receiver = this.connection.OpenReceiver(options.Address, receiverOptions);
+            }
             return receiver;
         }
         #endregion
@@ -96,10 +106,16 @@ namespace ClientLib
                         }
                     }
 
-                    if (options.TxAction.ToLower() == "commit") {
-                        if (delivery != null) {
-                            session.CommitTransaction();
+                    if (delivery != null) {
+                        if (options.TxAction.ToLower() == "commit") {
+                             this.session.CommitTransaction();
+                             this.session.BeginTransaction();
+                        } else if (options.TxAction.ToLower() == "rollback") {
+                             this.session.RollbackTransaction();
+                             this.session.BeginTransaction();
                         }
+                    } else {
+                        break;
                     }
 
                 if (message == null || (options.MsgCount > 0 && ((options.MsgCount - nReceived) < options.TxSize)))
@@ -124,9 +140,9 @@ namespace ClientLib
             }
 
             if (options.TxLoopendAction.ToLower() == "commit") {
-        		    if (delivery != null) {
-		                session.CommitTransaction();
-	              }
+                 this.session.CommitTransaction();
+            } else if (options.TxLoopendAction.ToLower() == "rollback") {
+                 this.session.RollbackTransaction();
             }
         }
 
@@ -154,7 +170,7 @@ namespace ClientLib
 
                 if (options.ProcessReplyTo)
                 {
-                    ISender sender = this.connection.OpenSender(this.address);
+                    ISender sender = this.connection.OpenSender(message.ReplyTo);
                     sender.Send(message);
                 }
 

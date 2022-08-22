@@ -124,7 +124,14 @@ namespace ClientLib
         /// <returns>built sender link</returns>
         private ISender PrepareSender(SenderOptions options)
         {
-            ISender sender = this.connection.OpenSender(this.address);
+            bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+
+            ISender sender;
+            if (tx_batch_flag) {
+                sender = this.session.OpenSender(this.address);
+            } else {
+                sender = this.connection.OpenSender(this.address);
+            }
             return sender;
         }
         #endregion
@@ -140,6 +147,8 @@ namespace ClientLib
             int nSent = 0;
             bool txFlag = true;
             Apache.Qpid.Proton.Client.IMessage<object> message;
+
+            this.session.BeginTransaction();
 
             while (txFlag && options.TxSize > 0)
             {
@@ -162,8 +171,15 @@ namespace ClientLib
                         nSent++;
                     }
 
-                    if (options.TxAction.ToLower() == "commit")
+                    if (options.TxAction.ToLower() == "commit") {
                         txs.Complete();
+                        this.session.CommitTransaction();
+                        this.session.BeginTransaction();
+                    } else if (options.TxAction.ToLower() == "rollback") {
+                        txs.Complete();
+                        this.session.RollbackTransaction();
+                        this.session.BeginTransaction();
+                    }
 
                     if ((options.Duration > 0) && (options.DurationMode == "after-send-after-tx-action"))
                         Utils.Sleep4Next(ts, options.MsgCount, (options.Duration), nSent);
@@ -186,8 +202,13 @@ namespace ClientLib
                     nSent++;
                 }
 
-                if (options.TxLoopendAction.ToLower() == "commit")
+                if (options.TxLoopendAction.ToLower() == "commit") {
                     txs.Complete();
+                    this.session.CommitTransaction();
+                } else if (options.TxLoopendAction.ToLower() == "rollback") {
+                    txs.Complete();
+                    this.session.RollbackTransaction();
+                }
             }
         }
 
