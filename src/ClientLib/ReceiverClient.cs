@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Apache.Qpid.Proton.Client;
 
 namespace ClientLib
@@ -35,6 +36,64 @@ namespace ClientLib
             Apache.Qpid.Proton.Client.ReceiverOptions receiverOptions = new Apache.Qpid.Proton.Client.ReceiverOptions();
             if (options.RecvBrowse)
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
+
+            //source
+            if (!string.IsNullOrEmpty(options.MsgSelector))
+            {
+		    Console.WriteLine("SELCTORE");
+		    Console.WriteLine(options.MsgSelector);
+		IDictionary<string, string> filters = new Dictionary<string, string>();
+		//IDictionary<string, string> filters = new IDictionary<string, string>();
+// 		x-opt-filter
+// filters.Add("x-opt-filter", options.MsgSelector);
+// filters.Add("x-opt-filter", "a = b");
+ filters.Add("x-opt-filter", "a = 1");
+// filters.Add("apache.org:selector-filter:string", options.MsgSelector);
+// filters.Add("apache.org:selector-filter:float", options.MsgSelector);
+// filters.Add("apache.org:selector-filter:int", options.MsgSelector);
+// filters.Add("apache.org:selector-filter:boolean", options.MsgSelector);
+//filters.Add("apache.org:selector-filter:list", options.MsgSelector);
+//	filters.Add("apache.org:selector-filter:map", options.MsgSelector);
+//         {
+//                   {
+//                       new Symbol("filter"),
+//                       new DescribedValue(
+//                               new Symbol("apache.org:selector-filter:float"),
+//                               options.MsgSelector)
+//                   },
+//                   {
+//                       new Symbol("filter1"),
+//                       new DescribedValue(
+//                               new Symbol("apache.org:selector-filter:string"),
+//                               options.MsgSelector)
+//                   },
+//                   {
+//                       new Symbol("filter2"),
+//                       new DescribedValue(
+//                               new Symbol("apache.org:selector-filter:int"),
+//                               options.MsgSelector)
+//                   },
+//                   {
+//                       new Symbol("filter3"),
+//                       new DescribedValue(
+//                               new Symbol("apache.org:selector-filter:boolean"),
+//                               options.MsgSelector)
+//                   },
+//                   {
+//                       new Symbol("filter4"),
+//                       new DescribedValue(
+//                               new Symbol("apache.org:selector-filter:list"),
+//                               options.MsgSelector)
+//                   },
+//                   {
+//                       new Symbol("filter5"),
+//                       new DescribedValue(
+//                               new Symbol("apache.org:selector-filter:map"),
+//                               options.MsgSelector)
+//                   }
+//               };
+                receiverOptions.SourceOptions.Filters = filters;
+            }
 
             bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
             IReceiver receiver;

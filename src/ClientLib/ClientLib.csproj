@@ -38,6 +38,10 @@
     <ProjectReference Include="..\..\qpid-proton-dotnet\src\Proton.Client\Proton.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
   <Target Name="PostClean" AfterTargets="Clean">
       <RemoveDir Directories="$(BaseIntermediateOutputPath)" /><!-- obj -->
       <RemoveDir Directories="$(BaseOutputPath)" /><!-- bin -->
