@@ -21,7 +21,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-/// using Newtonsoft.Json;
 using Apache.Qpid.Proton.Client;
 
 namespace ClientLib
@@ -43,6 +42,7 @@ namespace ClientLib
         /// <param name="hashContent"></param>
         public static void PrintMessageAsDict(IMessage<object> msg, bool hashContent)
         {
+            IAdvancedMessage<object> amsg = msg.ToAdvancedMessage();
             Dictionary<string, object> msgDict = new Dictionary<string, object>();
             msgDict.Add("durable", msg.Durable);
             msgDict.Add("ttl", FormatTTL(msg.TimeToLive));
@@ -62,8 +62,10 @@ namespace ClientLib
             msgDict.Add("group-sequence", msg.GroupSequence);
             msgDict.Add("reply-to-group-id", msg.ReplyToGroupId);
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
-//             msgDict.Add("properties", msg.ApplicationProperties);
-//             msgDict.Add("message-annotations", msg.MessageAnnotations);
+            if (msg.HasProperties)
+                msgDict.Add("properties", JsonConvert.SerializeObject(amsg.ApplicationProperties.Value).Replace("\"", "'"));
+            if (msg.HasAnnotations)
+                msgDict.Add("message-annotations", JsonConvert.SerializeObject(amsg.Annotations.Value));
             Console.WriteLine(FormatMap(msgDict));
         }
 
@@ -74,6 +76,7 @@ namespace ClientLib
         /// <param name="hashContent"></param>
         public static void PrintMessageAsInterop(IMessage<object> msg, bool hashContent)
         {
+            IAdvancedMessage<object> amsg = msg.ToAdvancedMessage();
             Dictionary<string, object> msgDict = new Dictionary<string, object>();
             msgDict.Add("durable", msg.Durable);
             msgDict.Add("ttl", FormatTTL(msg.TimeToLive));
@@ -95,8 +98,10 @@ namespace ClientLib
             msgDict.Add("group-sequence", msg.GroupSequence);
             msgDict.Add("reply-to-group-id", msg.ReplyToGroupId);
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
-//            msgDict.Add("properties", msg.ApplicationProperties);
-            //msgDict.Add("message-annotations", msg.MessageAnnotations);
+            if (msg.HasProperties)
+                msgDict.Add("properties", JsonConvert.SerializeObject(amsg.ApplicationProperties.Value).Replace("\"", "'"));
+            // if (msg.HasAnnotations)
+            //    msgDict.Add("message-annotations", JsonConvert.SerializeObject(amsg.Annotations.Value));
             Console.WriteLine(FormatMap(msgDict));
         }
 
@@ -107,6 +112,7 @@ namespace ClientLib
         /// <param name="hashContent"></param>
         public static void PrintMessageAsJson(IMessage<object> msg, bool hashContent)
         {
+            IAdvancedMessage<object> amsg = msg.ToAdvancedMessage();
             Dictionary<string, object> msgDict = new Dictionary<string, object>();
             msgDict.Add("durable", msg.Durable);
             msgDict.Add("ttl", FormatTTL(msg.TimeToLive));
@@ -128,8 +134,11 @@ namespace ClientLib
             msgDict.Add("group-sequence", msg.GroupSequence);
             msgDict.Add("reply-to-group-id", msg.ReplyToGroupId);
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
-//            msgDict.Add("properties", msg.ApplicationProperties);
-//             Console.WriteLine(JsonConvert.SerializeObject(msgDict));
+            if (msg.HasProperties)
+                msgDict.Add("properties", JsonConvert.SerializeObject(amsg.ApplicationProperties.Value).Replace("\"", "'"));
+            // if (msg.HasAnnotations)
+            //    msgDict.Add("message-annotations", JsonConvert.SerializeObject(amsg.Annotations.Value));
+            Console.WriteLine(JsonConvert.SerializeObject(msgDict));
         }
 
         /// <summary>
@@ -537,6 +546,10 @@ namespace ClientLib
             else if (options.LogMsgs.Equals("dict"))
             {
                 Formatter.PrintMessageAsDict(msg, hashContent);
+            }
+            else if (options.LogMsgs.Equals("upstream"))
+            {
+                Formatter.PrintMessage(msg, hashContent);
             }
             else if (options.LogMsgs.Equals("interop"))
             {

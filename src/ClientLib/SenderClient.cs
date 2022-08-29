@@ -97,6 +97,14 @@ namespace ClientLib
                 msg.TimeToLive = options.Ttl.Value;
             }
 
+            //set up application properties
+            if (options.Properties.Count > 0)
+            {
+                foreach (KeyValuePair<string, object> p in options.Properties)
+                {
+                    msg.SetProperty(p.Key.ToString(), p.Value);
+                }
+            }
             return msg;
         }
      #endregion
