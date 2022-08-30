@@ -308,6 +308,8 @@ namespace ClientLib
                     System.Threading.Thread.Sleep(options.CloseSleep);
                 }
 
+                ///close connection and link
+                this.CloseLink(sender);
                 this.CloseConnection();
 
                 Utils.TsSnapStore(this.ptsdata, 'G', options.LogStats);

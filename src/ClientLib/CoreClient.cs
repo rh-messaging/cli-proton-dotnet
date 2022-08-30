@@ -163,6 +163,16 @@ namespace ClientLib
         }
 
         /// <summary>
+        /// Method for close link
+        /// </summary>
+        /// <param name="link">sender or receiver link</param>
+        protected void CloseLink(ILink link)
+        {
+            if (link != null)
+                link.Close();
+        }
+
+        /// <summary>
         /// Method for close session and connection
         /// </summary>
         protected void CloseConnection()
@@ -172,13 +182,13 @@ namespace ClientLib
                 this.CloseSession();
                 this.connection.Close();
             }
-            this.CloseClient();
         }
 
         /// <summary>
         /// Method for close client
         /// </summary>
         protected void CloseClient()
+	// TODO is this desired ??
         {
             if (this.client != null)
             {

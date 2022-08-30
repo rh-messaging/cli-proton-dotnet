@@ -48,6 +48,10 @@ namespace ClientLib
         }
         #endregion
 
+        #region Listener methods
+	// TODO Listener
+        #endregion
+
         #region Receive methods
         /// <summary>
         /// Method for browse or selector receive
@@ -173,6 +177,7 @@ namespace ClientLib
                 {
                     ISender sender = this.connection.OpenSender(message.ReplyTo);
                     sender.Send(message);
+                    sender.Close();
                 }
 
                 if ((options.MsgCount > 0) && (nReceived == options.MsgCount))
@@ -227,6 +232,9 @@ namespace ClientLib
                     Utils.TsSnapStore(this.ptsdata, 'E', options.LogStats);
                     int nReceived = 0;
 
+                    if (options.Capacity > -1)
+                        receiver.AddCredit(Convert.ToUInt32(options.Capacity));
+
                     bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                     //receiving of messages
@@ -245,6 +253,8 @@ namespace ClientLib
                         System.Threading.Thread.Sleep(options.CloseSleep);
                     }
 
+                    //close connection and link
+                    this.CloseLink(receiver);
                     this.CloseConnection();
 
                     Utils.TsSnapStore(this.ptsdata, 'G', options.LogStats);
