@@ -287,7 +287,6 @@ namespace ClientLib
                 bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                 Stopwatch stopwatch = new Stopwatch();
-                // TimeSpan timespan = options.Timeout;
 
                 stopwatch.Start();
 
