@@ -138,8 +138,6 @@ namespace ClientLib
         public int MsgCount { get; protected set; }
         public int CloseSleep { get; protected set; }
         public string SyncMode { get; protected set; }
-        public TimeSpan Timeout { get; protected set; }
-        public bool isInfinityReceiving { get; protected set; }
         public string LogMsgs { get; protected set; }
         public string LogStats { get; protected set; }
         public string LogLib { get; protected set; }
@@ -155,8 +153,6 @@ namespace ClientLib
             this.MsgCount = 1;
             this.CloseSleep = 0;
             this.SyncMode = "none";
-            this.Timeout = TimeSpan.FromSeconds(1);
-            this.isInfinityReceiving = false;
             this.LogMsgs = "upstream";
             this.LogStats = String.Empty;
             this.LogLib = String.Empty;
@@ -168,16 +164,6 @@ namespace ClientLib
                 (int closeSleep) => { this.CloseSleep = closeSleep * this._toSecConstant; });
             this.Add("sync-mode=", "sync action",
                 (string syncMode) => { this.SyncMode = syncMode; });
-            this.Add("t|timeout=", "timeout",
-                (int timeout) => {
-                    if (timeout == -1)
-                    {
-                        this.Timeout = TimeSpan.FromDays(100);
-                        this.isInfinityReceiving = true;
-                    }
-                    else
-                        this.Timeout = TimeSpan.FromSeconds(timeout);
-                });
             this.Add("log-msgs=", "log messages output [dict|body|upstream|interop]",
                 (string logMsgs) => { this.LogMsgs = logMsgs; });
             this.Add("log-stats=", "report various statistic/debug information [endpoint]",
@@ -251,6 +237,8 @@ namespace ClientLib
         public string GroupId { get; private set; }
         public int GroupSequence { get; private set; }
         public string ReplyToGroupId { get; private set; }
+        public long Timeout { get; protected set; }
+        public bool isInfinitySending { get; protected set; }
 
         public Dictionary<string, object> Properties { get; set; }
         public List<object> ListContent { get; private set; }
@@ -292,6 +280,8 @@ namespace ClientLib
             this.ContentType = "string";
             this.PropertyType = "string";
             this.GroupSequence = 0;
+            this.Timeout = 1000;
+            this.isInfinitySending = false;
 
             this.Properties = new Dictionary<string, object>();
             this.ListContent = new List<object>();
@@ -426,6 +416,8 @@ namespace ClientLib
         public bool ProcessReplyTo { get; private set; }
         public bool RecvListener { get; private set; }
         public int RecvListenerPort { get; private set; }
+        public TimeSpan Timeout { get; protected set; }
+        public bool isInfinityReceiving { get; protected set; }
 
         /// <summary>
         /// Constructor
@@ -435,6 +427,8 @@ namespace ClientLib
             //default values
             this.Action = String.Empty;
             this.RecvListenerPort = 5672;
+            this.Timeout = TimeSpan.FromSeconds(1);
+            this.isInfinityReceiving = false;
 
             //add options
             this.Add("action=", "action on acquired message [accept, release, reject]",
@@ -449,6 +443,16 @@ namespace ClientLib
                 (bool recvListen) => { this.RecvListener = recvListen; });
             this.Add("recv-listen-port=", "port for p2p",
                 (int port) => { this.RecvListenerPort = port; });
+            this.Add("t|timeout=", "timeout",
+                (int timeout) => {
+                    if (timeout == -1)
+                    {
+                        this.Timeout = TimeSpan.FromDays(100);
+                        this.isInfinityReceiving = true;
+                    }
+                    else
+                        this.Timeout = TimeSpan.FromSeconds(timeout);
+                });
         }
     }
 

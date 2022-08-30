@@ -132,13 +132,18 @@ namespace ClientLib
         /// <returns>built sender link</returns>
         private ISender PrepareSender(SenderOptions options)
         {
+            Apache.Qpid.Proton.Client.SenderOptions SenderOptions = new Apache.Qpid.Proton.Client.SenderOptions();
+            if (!options.isInfinitySending) {
+                SenderOptions.SendTimeout = options.Timeout;
+            }
+
             bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
             ISender sender;
             if (tx_batch_flag) {
-                sender = this.session.OpenSender(this.address);
+                sender = this.session.OpenSender(this.address, SenderOptions);
             } else {
-                sender = this.connection.OpenSender(this.address);
+                sender = this.connection.OpenSender(this.address, SenderOptions);
             }
             return sender;
         }
@@ -282,7 +287,7 @@ namespace ClientLib
                 bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                 Stopwatch stopwatch = new Stopwatch();
-                TimeSpan timespan = options.Timeout;
+                // TimeSpan timespan = options.Timeout;
 
                 stopwatch.Start();
 
@@ -344,4 +349,3 @@ namespace ClientLib
 
     }
 }
-
