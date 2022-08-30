@@ -65,7 +65,7 @@ namespace ClientLib
                     {
                         foreach (IConnection conn in connections)
                         {
-                            // TODO add session
+                            sessions.Add(this.connection.OpenSession());
                         }
                     }
                     // catch (AmqpException ae)
