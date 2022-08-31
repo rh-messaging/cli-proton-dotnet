@@ -21,6 +21,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
+using Newtonsoft.Json;
 using Apache.Qpid.Proton.Client;
 
 namespace ClientLib
@@ -34,6 +35,26 @@ namespace ClientLib
         private const string EmptyDict = "{}";
         private const string EmptyList = "[]";
 
+
+        /// <summary>
+        /// Print message in upstream format
+        /// </summary>
+        /// <param name="msg">msg object</param>
+        /// <param name="hashContent"></param>
+        public static void PrintMessage(IMessage<object> msg, bool hashContent)
+        {
+	    IAdvancedMessage<object> amsg = msg.ToAdvancedMessage();
+            Console.WriteLine("Message(");
+                if (amsg.Header != null) Console.WriteLine(amsg.Header.ToString());
+                if (msg.HasAnnotations)
+                    Console.WriteLine(JsonConvert.SerializeObject(amsg.Annotations.Value.ToString()));
+		if (amsg.Properties != null) Console.WriteLine(amsg.Properties.ToString());
+                if (msg.HasProperties)
+                    Console.WriteLine(JsonConvert.SerializeObject(amsg.ApplicationProperties.Value).ToString());
+                if (msg.Body != null) Console.WriteLine("body:{0}", hashContent ? Hash(msg.Body.ToString()): msg.Body.ToString());
+                if (amsg.Footer != null) Console.WriteLine(amsg.Footer.ToString());
+            Console.WriteLine(")");
+        }
 
         /// <summary>
         /// Print message as python dict

@@ -134,9 +134,11 @@ namespace ClientLib
             } else {
                serverHost = hostport;
                serverPort = 5672;
-            }
+	    }
 
             this.client = IClient.Create();
+
+	    // TODO SSL
 
             Apache.Qpid.Proton.Client.ConnectionOptions conn_options = new Apache.Qpid.Proton.Client.ConnectionOptions();
             conn_options.User = user;
