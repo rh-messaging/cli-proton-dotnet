@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Transactions;
 
 using Apache.Qpid.Proton.Client;
+using Apache.Qpid.Proton.Types.Messaging;
 
 namespace ClientLib
 {
@@ -58,7 +59,10 @@ namespace ClientLib
         static IMessage<object> CreateMessage(SenderOptions options, int nSent)
         {
             object content = CreateMsgContent(options, nSent);
-            IMessage<object> msg = IMessage<object>.Create(content);
+            // returns IMessage not IAdvancedMessage, so must be explicitly converted
+            // IAdvancedMessage<object> msg = IAdvancedMessage<object>.Create(content);
+            IMessage<object> basemsg = IMessage<object>.Create(content);
+            IAdvancedMessage<object> msg = basemsg.ToAdvancedMessage();
 
             if (!String.IsNullOrEmpty(options.Id))
                 msg.MessageId = options.Id;
@@ -81,6 +85,9 @@ namespace ClientLib
                 msg.ReplyToGroupId = options.ReplyToGroupId;
             if (!String.IsNullOrEmpty(options.To))
                 msg.To = options.To;
+
+            // set up message header
+            msg.Header = new Header();
 
             if (options.Durable.HasValue)
             {
@@ -159,7 +166,7 @@ namespace ClientLib
         {
             int nSent = 0;
             bool txFlag = true;
-            Apache.Qpid.Proton.Client.IMessage<object> message;
+            IMessage<object> message;
 
             this.session.BeginTransaction();
 
@@ -233,7 +240,7 @@ namespace ClientLib
         private void Send(ISender sender, SenderOptions options)
         {
             int nSent = 0;
-            Apache.Qpid.Proton.Client.IMessage<object> message;
+            IMessage<object> message;
 
             while ((nSent < options.MsgCount))
             {
@@ -301,7 +308,8 @@ namespace ClientLib
 
                 if (options.LogStats.IndexOf("endpoints") > -1)
                 {
-                    // TODO
+                    Dictionary<string, object> stats = GetSenderStats(sender);
+                    Formatter.PrintStatistics(stats);
                 }
 
 
