@@ -114,7 +114,7 @@ namespace ClientLib
             }
             return msg;
         }
-     #endregion
+        #endregion
 
         #region Help method
         /// <summary>
@@ -322,7 +322,7 @@ namespace ClientLib
 
                 ///close connection and link
                 this.CloseLink(sender);
-                this.CloseConnection();
+                this.CloseClient();
 
                 Utils.TsSnapStore(this.ptsdata, 'G', options.LogStats);
 
@@ -343,7 +343,7 @@ namespace ClientLib
             }
             finally
             {
-                this.CloseConnection();
+                this.CloseClient();
             }
             Environment.Exit(this.exitCode);
         }

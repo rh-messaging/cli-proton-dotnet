@@ -253,9 +253,8 @@ namespace ClientLib
                         System.Threading.Thread.Sleep(options.CloseSleep);
                     }
 
-                    //close connection and link
                     this.CloseLink(receiver);
-                    this.CloseConnection();
+                    this.CloseClient();
 
                     Utils.TsSnapStore(this.ptsdata, 'G', options.LogStats);
 
@@ -278,7 +277,7 @@ namespace ClientLib
             }
             finally
             {
-                this.CloseConnection();
+                this.CloseClient();
             }
             Environment.Exit(exitCode);
         }

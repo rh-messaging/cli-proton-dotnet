@@ -181,7 +181,6 @@ namespace ClientLib
         {
             if (this.connection != null)
             {
-                this.CloseSession();
                 this.connection.Close();
             }
         }
@@ -194,6 +193,8 @@ namespace ClientLib
         {
             if (this.client != null)
             {
+                this.CloseSession();
+                this.CloseConnection();
                 this.client.Close();
             }
         }
