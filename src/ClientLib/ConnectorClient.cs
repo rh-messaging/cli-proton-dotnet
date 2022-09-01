@@ -55,7 +55,7 @@ namespace ClientLib
                     for (int i = 0; i < options.MsgCount; i++)
                     {
                         // TODO, host, port, options (incl. credentials)
-                        connections.Add(client.Connect(options.Url);
+                        connections.Add(client.Connect(options.Url));
                     }
                 }
 
