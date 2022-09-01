@@ -342,6 +342,16 @@ namespace ClientLib
                 });
             this.Add("msg-content-from-file=", "specify file name to load the content from",
                 (string path) => { this.ContentFromFile = ReadInputFile(path); });
+            this.Add("t|timeout=", "timeout",
+                (int timeout) => {
+                    if (timeout == -1)
+                    {
+                        this.Timeout = 8640000000;
+                        this.isInfinitySending = true;
+                    }
+                    else
+                        this.Timeout = timeout*1000;
+                });
         }
 
         public static (string, object) ParseItem(string mapItem)
