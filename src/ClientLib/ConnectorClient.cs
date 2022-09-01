@@ -54,7 +54,8 @@ namespace ClientLib
 
                     for (int i = 0; i < options.MsgCount; i++)
                     {
-                        connections.Add(client.Connect(options.Url));
+                        // TODO, host, port, options (incl. credentials)
+                        connections.Add(client.Connect(options.Url);
                     }
                 }
 
@@ -65,7 +66,7 @@ namespace ClientLib
                     {
                         foreach (IConnection conn in connections)
                         {
-                            sessions.Add(this.connection.OpenSession());
+                            sessions.Add(conn.OpenSession());
                         }
                     }
                     // catch (AmqpException ae)
@@ -92,7 +93,7 @@ namespace ClientLib
                                 {
                                     i++;
                                     if (s != null)
-                                        senders.Add(this.connection.OpenSender(this.address));
+                                        senders.Add(s.OpenSender(address));
                                     else
                                         senders.Add(null);
                                 }
@@ -115,8 +116,9 @@ namespace ClientLib
                                 foreach (ISession s in sessions)
                                 {
                                     i++;
-                                    if (s != null)
-                                        receivers.Add(connection.OpenReceiver(options.Address));
+                                    if (s != null) {
+                                        receivers.Add(s.OpenReceiver(address));
+				    }
                                     else
                                         receivers.Add(null);
                                 }
