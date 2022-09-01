@@ -214,12 +214,11 @@ namespace ClientLib
 
                     Utils.TsSnapStore(this.ptsdata, 'B', options.LogStats);
 
-                    this.SetAddress(options.Url);
                     this.CreateConnection(options);
 
                     Utils.TsSnapStore(this.ptsdata, 'C', options.LogStats);
 
-                    this.CreateSession();
+                    // session are only used for transactions
 
                     Utils.TsSnapStore(this.ptsdata, 'D', options.LogStats);
 

@@ -85,15 +85,6 @@ namespace ClientLib
 
         #region Connection and session methods
         /// <summary>
-        /// Method for set address
-        /// </summary>
-        /// <param name="url">string url</param>
-        protected void SetAddress(string url)
-        {
-            this.address = url;
-        }
-
-        /// <summary>
         /// Method for create connection
         /// </summary>
         protected void CreateConnection(ConnectionOptions options)
@@ -189,7 +180,6 @@ namespace ClientLib
         /// Method for close client
         /// </summary>
         protected void CloseClient()
-	// TODO is this desired ??
         {
             if (this.client != null)
             {

@@ -59,8 +59,6 @@ namespace ClientLib
         static IMessage<object> CreateMessage(SenderOptions options, int nSent)
         {
             object content = CreateMsgContent(options, nSent);
-            // returns IMessage not IAdvancedMessage, so must be explicitly converted
-            // IAdvancedMessage<object> msg = IAdvancedMessage<object>.Create(content);
             IMessage<object> basemsg = IMessage<object>.Create(content);
             IAdvancedMessage<object> msg = basemsg.ToAdvancedMessage();
 
@@ -148,9 +146,9 @@ namespace ClientLib
 
             ISender sender;
             if (tx_batch_flag) {
-                sender = this.session.OpenSender(this.address, SenderOptions);
+                sender = this.session.OpenSender(options.Address, SenderOptions);
             } else {
-                sender = this.connection.OpenSender(this.address, SenderOptions);
+                sender = this.connection.OpenSender(options.Address, SenderOptions);
             }
             return sender;
         }
@@ -278,13 +276,11 @@ namespace ClientLib
                 this.ptsdata = Utils.TsInit(options.LogStats);
                 Utils.TsSnapStore(this.ptsdata, 'B', options.LogStats);
 
-                this.SetAddress(options.Address);
-
                 this.CreateConnection(options);
 
                 Utils.TsSnapStore(this.ptsdata, 'C', options.LogStats);
 
-                this.CreateSession();
+                // session are only used for transactions
 
                 Utils.TsSnapStore(this.ptsdata, 'D', options.LogStats);
 
