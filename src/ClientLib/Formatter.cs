@@ -84,9 +84,9 @@ namespace ClientLib
             msgDict.Add("reply-to-group-id", msg.ReplyToGroupId);
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
             if (msg.HasProperties)
-                msgDict.Add("properties", JsonConvert.SerializeObject(amsg.ApplicationProperties.Value).Replace("\"", "'"));
+                msgDict.Add("properties", amsg.ApplicationProperties.Value);
             if (msg.HasAnnotations)
-                msgDict.Add("message-annotations", JsonConvert.SerializeObject(amsg.Annotations.Value));
+                msgDict.Add("message-annotations", amsg.Annotations.Value);
             Console.WriteLine(FormatMap(msgDict));
         }
 
@@ -120,9 +120,9 @@ namespace ClientLib
             msgDict.Add("reply-to-group-id", msg.ReplyToGroupId);
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
             if (msg.HasProperties)
-                msgDict.Add("properties", JsonConvert.SerializeObject(amsg.ApplicationProperties.Value).Replace("\"", "'"));
+                msgDict.Add("properties", amsg.ApplicationProperties.Value);
             // if (msg.HasAnnotations)
-            //    msgDict.Add("message-annotations", JsonConvert.SerializeObject(amsg.Annotations.Value));
+            //    msgDict.Add("message-annotations", amsg.Annotations.Value);
             Console.WriteLine(FormatMap(msgDict));
         }
 
@@ -156,9 +156,9 @@ namespace ClientLib
             msgDict.Add("reply-to-group-id", msg.ReplyToGroupId);
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
             if (msg.HasProperties)
-                msgDict.Add("properties", JsonConvert.SerializeObject(amsg.ApplicationProperties.Value).Replace("\"", "'"));
+                msgDict.Add("properties", amsg.ApplicationProperties.Value);
             // if (msg.HasAnnotations)
-            //    msgDict.Add("message-annotations", JsonConvert.SerializeObject(amsg.Annotations.Value));
+            //    msgDict.Add("message-annotations", amsg.Annotations.Value);
             Console.WriteLine(JsonConvert.SerializeObject(msgDict));
         }
 
@@ -484,7 +484,7 @@ namespace ClientLib
             if (inData == null)
             {
                 return Formatter.None;
-	          }
+            }
             else if (inData.GetType() == typeof(Int32))
             {
                 return FormatInt((int)inData);
