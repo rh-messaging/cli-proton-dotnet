@@ -74,6 +74,11 @@ namespace ClientLib
                 msg.UserId = options.UserId;
             if (!String.IsNullOrEmpty(options.ReplyTo))
                 msg.ReplyTo = options.ReplyTo;
+
+            if (options.MessageAnnotations.Count  > 0) {
+                msg.Annotations = new MessageAnnotations(options.MessageAnnotations);
+            }
+
             if (!String.IsNullOrEmpty(options.GroupId))
                 msg.GroupId = options.GroupId;
             if (!String.IsNullOrEmpty(options.GroupId))
@@ -271,6 +276,7 @@ namespace ClientLib
             try
             {
                 this.ParseArguments(args, options);
+                bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                 //init timestamping
                 this.ptsdata = Utils.TsInit(options.LogStats);
@@ -281,13 +287,12 @@ namespace ClientLib
                 Utils.TsSnapStore(this.ptsdata, 'C', options.LogStats);
 
                 // session are only used for transactions
+                if (tx_batch_flag)
+                    this.CreateSession();
 
                 Utils.TsSnapStore(this.ptsdata, 'D', options.LogStats);
 
                 ISender sender = this.PrepareSender(options);
-
-                //enable transactions
-                bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                 Stopwatch stopwatch = new Stopwatch();
 
@@ -316,7 +321,7 @@ namespace ClientLib
                     System.Threading.Thread.Sleep(options.CloseSleep);
                 }
 
-                ///close connection and link
+                // resource cleanup
                 this.CloseLink(sender);
                 this.CloseClient();
 

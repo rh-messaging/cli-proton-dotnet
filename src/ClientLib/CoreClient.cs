@@ -88,6 +88,7 @@ namespace ClientLib
             string address = null;
             string scheme = null;
 
+            // TODO refactor
             if (rest.Split("://").Length > 1) {
                 scheme = rest.Split("://")[0];
                 rest = rest.Split("://")[1];

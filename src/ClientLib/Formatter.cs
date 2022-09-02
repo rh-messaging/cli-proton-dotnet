@@ -23,6 +23,7 @@ using System.Text;
 
 using Newtonsoft.Json;
 using Apache.Qpid.Proton.Client;
+using Apache.Qpid.Proton.Types;
 
 namespace ClientLib
 {
@@ -364,11 +365,11 @@ namespace ClientLib
             return Formatter.None;
         }
 
-         /// <summary>
-         /// Format AMQP map as python dict
-         /// </summary>
-         /// <param name="inDict">amqp map</param>
-         /// <returns>string</returns>
+        /// <summary>
+        /// Format AMQP map as python dict
+        /// </summary>
+        /// <param name="inDict">amqp map</param>
+        /// <returns>string</returns>
         public static string FormatMap(Dictionary<object, object> inDict)
         {
             if (inDict != null)
@@ -390,6 +391,37 @@ namespace ClientLib
                     dict.Append("}");
                     return dict.ToString();
                 }
+            }
+            return Formatter.None;
+        }
+
+        /// <summary>
+        /// Format dict as python dict
+        /// </summary>
+        /// <param name="inDict">map</param>
+        /// <returns>string</returns>
+        public static string FormatMap(Dictionary<Symbol, object> inDict)
+        {
+            if (inDict != null)
+            {
+                if (inDict.Count == 0)
+                {
+                    return Formatter.EmptyDict;
+                }
+                else
+                {
+                    StringBuilder dict = new StringBuilder();
+                    string delimiter = "";
+                    dict.Append("{");
+                    foreach(KeyValuePair<Symbol, object> pair in inDict)
+                    {
+                        dict.Append(delimiter).Append(FormatVariant(pair.Key)).Append(": ").Append(FormatVariant(pair.Value));
+                        delimiter = ", ";
+                    }
+                    dict.Append("}");
+                    return dict.ToString();
+                }
+
             }
             return Formatter.None;
         }
@@ -528,6 +560,10 @@ namespace ClientLib
             else if (inData.GetType() == typeof(Dictionary<object, object>))
             {
                 return FormatMap((Dictionary<object, object>)inData);
+            }
+            else if (inData.GetType() == typeof(Dictionary<Symbol, object>))
+            {
+                return FormatMap((Dictionary<Symbol, object>)inData);
             }
             else if (inData.GetType() == typeof(Collection<object>))
             {

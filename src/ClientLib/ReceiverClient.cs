@@ -209,6 +209,8 @@ namespace ClientLib
                 }
                 else
                 {
+                    bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+
                     //init timestamping
                     this.ptsdata = Utils.TsInit(options.LogStats);
 
@@ -219,6 +221,8 @@ namespace ClientLib
                     Utils.TsSnapStore(this.ptsdata, 'C', options.LogStats);
 
                     // session are only used for transactions
+                    if (tx_batch_flag)
+                        this.CreateSession();
 
                     Utils.TsSnapStore(this.ptsdata, 'D', options.LogStats);
 
@@ -233,8 +237,6 @@ namespace ClientLib
 
                     if (options.Capacity > -1)
                         receiver.AddCredit(Convert.ToUInt32(options.Capacity));
-
-                    bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                     //receiving of messages
                     if (options.RecvBrowse || !String.IsNullOrEmpty(options.MsgSelector) || options.isInfinityReceiving)
@@ -252,6 +254,7 @@ namespace ClientLib
                         System.Threading.Thread.Sleep(options.CloseSleep);
                     }
 
+                    // resource cleanup
                     this.CloseLink(receiver);
                     this.CloseClient();
 

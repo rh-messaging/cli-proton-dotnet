@@ -21,6 +21,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using NDesk.Options;
 
+using Apache.Qpid.Proton.Types;
+
 namespace ClientLib
 {
     /// <summary>
@@ -243,6 +245,7 @@ namespace ClientLib
         public Dictionary<string, object> Properties { get; set; }
         public List<object> ListContent { get; private set; }
         public Dictionary<string, object> MapContent { get; set; }
+        public IDictionary<Symbol, object> MessageAnnotations { get; set; }
 
         /// <summary>
         /// Read text from file
@@ -286,6 +289,7 @@ namespace ClientLib
             this.Properties = new Dictionary<string, object>();
             this.ListContent = new List<object>();
             this.MapContent = new Dictionary<string, object>();
+            this.MessageAnnotations = new Dictionary<Symbol, object>();
 
             //add options
             this.Add("msg-id=", "use the supplied id instead of generating one",
@@ -342,6 +346,11 @@ namespace ClientLib
                 });
             this.Add("msg-content-from-file=", "specify file name to load the content from",
                 (string path) => { this.ContentFromFile = ReadInputFile(path); });
+            this.Add("msg-annotation=", "specify amqp properties",
+                (string annotation) => {
+                    var (key, value) = ParseItem(annotation);
+                      MessageAnnotations.Add(Symbol.Lookup(key), value);
+                });
             this.Add("t|timeout=", "timeout",
                 (int timeout) => {
                     if (timeout == -1)
