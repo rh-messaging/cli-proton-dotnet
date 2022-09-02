@@ -70,16 +70,6 @@ namespace ClientLib
                 typeArguments.PrintHelp();
                 Environment.Exit(ReturnCode.ERROR_ARG);
             }
-            this.SetUpCliLogging(typeArguments);
-        }
-
-        /// <summary>
-        /// Method for enabling cli logging
-        /// </summary>
-        /// <param name="options">parsed options from cmd</param>
-        private void SetUpCliLogging(Options options)
-        {
-            // TODO
         }
         #endregion
 
@@ -129,11 +119,16 @@ namespace ClientLib
 
             this.client = IClient.Create();
 
-	    // TODO SSL
-
             Apache.Qpid.Proton.Client.ConnectionOptions conn_options = new Apache.Qpid.Proton.Client.ConnectionOptions();
             conn_options.User = user;
             conn_options.Password = password;
+
+	    if((options as BasicOptions).LogLib.ToUpper() == "TRANSPORT_FRM") {
+		// not yet implemented in qpid-proton-dotnet library"
+                conn_options.TraceFrames = true;
+            }
+
+	    // TODO SSL
 
             this.connection = client.Connect(serverHost, serverPort, conn_options);
         }
