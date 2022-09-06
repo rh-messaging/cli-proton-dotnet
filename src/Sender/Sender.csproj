@@ -16,7 +16,7 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../qpid-proton-dotnet/common.props" />
+  <Import Project="../../../qpid-proton-dotnet/common.props" />
 
   <PropertyGroup>
     <TargetFramework>$(DefaultExeTargetFrameworks)</TargetFramework>
@@ -32,8 +32,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\qpid-proton-dotnet\src\Proton\Proton.csproj" />
-    <ProjectReference Include="..\..\qpid-proton-dotnet\src\Proton.Client\Proton.Client.csproj" />
+    <ProjectReference Include="..\..\..\qpid-proton-dotnet\src\Proton\Proton.csproj" />
+    <ProjectReference Include="..\..\..\qpid-proton-dotnet\src\Proton.Client\Proton.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,7 +46,6 @@
   <Target Name="PostClean" AfterTargets="Clean">
       <RemoveDir Directories="$(BaseIntermediateOutputPath)" /><!-- obj -->
       <RemoveDir Directories="$(BaseOutputPath)" /><!-- bin -->
-  </Target>
+    </Target>
 
-  
 </Project>
