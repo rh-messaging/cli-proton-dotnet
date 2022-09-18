@@ -107,7 +107,7 @@ namespace ClientLib
             msgDict.Add("first-acquirer", msg.FirstAcquirer);
             msgDict.Add("id", msg.MessageId);
             msgDict.Add("to", msg.To);
-            msgDict.Add("address", msg.To);
+            msgDict.Add("address", msg.To.Replace("topic://", ""));
             msgDict.Add("reply-to", msg.ReplyTo);
             msgDict.Add("subject", msg.Subject);
             msgDict.Add("creation-time", msg.CreationTime);
