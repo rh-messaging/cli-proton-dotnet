@@ -1,0 +1,51 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientLib", "src\ClientLib\ClientLib.csproj", "{B2875F33-AA50-4F9F-99FF-3C361341C265}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Connector", "src\Connector\Connector.csproj", "{9A962324-CC66-414A-B772-EF5BD7B2C46C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Receiver", "src\Receiver\Receiver.csproj", "{DF8C040D-9870-4888-9F79-9B8D1ABD6E48}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sender", "src\Sender\Sender.csproj", "{50217F2B-D741-4EA7-8540-54562A292854}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proton.Client", "..\qpid-proton-dotnet\src\Proton.Client\Proton.Client.csproj", "{B0DDF8FC-FBCE-44F6-9FA2-AF263A251A5E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proton", "..\qpid-proton-dotnet\src\Proton\Proton.csproj", "{1DB91950-2B92-4F0B-A06A-8CFEAC775E7A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2875F33-AA50-4F9F-99FF-3C361341C265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2875F33-AA50-4F9F-99FF-3C361341C265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2875F33-AA50-4F9F-99FF-3C361341C265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2875F33-AA50-4F9F-99FF-3C361341C265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A962324-CC66-414A-B772-EF5BD7B2C46C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A962324-CC66-414A-B772-EF5BD7B2C46C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A962324-CC66-414A-B772-EF5BD7B2C46C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A962324-CC66-414A-B772-EF5BD7B2C46C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF8C040D-9870-4888-9F79-9B8D1ABD6E48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF8C040D-9870-4888-9F79-9B8D1ABD6E48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF8C040D-9870-4888-9F79-9B8D1ABD6E48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF8C040D-9870-4888-9F79-9B8D1ABD6E48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50217F2B-D741-4EA7-8540-54562A292854}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50217F2B-D741-4EA7-8540-54562A292854}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50217F2B-D741-4EA7-8540-54562A292854}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50217F2B-D741-4EA7-8540-54562A292854}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0DDF8FC-FBCE-44F6-9FA2-AF263A251A5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0DDF8FC-FBCE-44F6-9FA2-AF263A251A5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0DDF8FC-FBCE-44F6-9FA2-AF263A251A5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0DDF8FC-FBCE-44F6-9FA2-AF263A251A5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DB91950-2B92-4F0B-A06A-8CFEAC775E7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DB91950-2B92-4F0B-A06A-8CFEAC775E7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DB91950-2B92-4F0B-A06A-8CFEAC775E7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DB91950-2B92-4F0B-A06A-8CFEAC775E7A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9B8A8C09-172E-477B-A8D5-E2DBB3BF352B}
+	EndGlobalSection
+EndGlobal
