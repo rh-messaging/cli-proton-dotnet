@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Security;
 
 using Apache.Qpid.Proton.Client;
 
@@ -129,7 +130,11 @@ namespace ClientLib
                 conn_options.TraceFrames = true;
             }
 
-	    // TODO SSL
+            // TODO SSL
+            if (options.ConnSSL) {
+                conn_options.SslOptions.SslEnabled = true;
+                conn_options.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors; // Self signed
+            }
 
             this.connection = client.Connect(serverHost, serverPort, conn_options);
         }
