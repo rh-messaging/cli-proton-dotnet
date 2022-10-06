@@ -72,6 +72,54 @@ namespace ClientLib
                 Environment.Exit(ReturnCode.ERROR_ARG);
             }
         }
+
+        /// <summary>
+        /// Method for parsing given url
+        /// </summary>
+        protected Tuple<string, string, string, string, int, string> ParseUrl(string url)
+        {
+            string rest = url;
+            string serverHost = null;
+            int serverPort = 5672;
+            string user = null;
+            string password = null;
+            string address = null;
+            string scheme = null;
+            string [] addr_parts;
+
+            addr_parts= rest.Split("://");
+            if (addr_parts.Length > 1) {
+                scheme = addr_parts[0];
+                rest = addr_parts[1];
+            }
+
+            addr_parts= rest.Split("@");
+            if (addr_parts.Length > 1) {
+                string credentials = addr_parts[0];
+                rest = addr_parts[1];
+                addr_parts= credentials.Split(":");
+                user = addr_parts[0];
+                if (addr_parts.Length > 1) {
+                    password = addr_parts[1];
+                }
+            }
+
+            addr_parts= rest.Split("/");
+            if (addr_parts.Length > 1) {
+                rest = addr_parts[0];
+                address = addr_parts[1];
+            }
+
+            addr_parts= rest.Split(":");
+            if (addr_parts.Length > 1) {
+                serverHost = addr_parts[0];
+                serverPort = int.Parse( addr_parts[1]);
+            } else {
+                serverHost = rest;
+            }
+
+            return Tuple.Create(scheme, user, password, serverHost, serverPort, address);
+        }
         #endregion
 
         #region Connection and session methods
@@ -80,53 +128,16 @@ namespace ClientLib
         /// </summary>
         protected void CreateConnection(ConnectionOptions options)
         {
-            string rest = options.Url;
-            string hostport;
-            string serverHost;
-            int serverPort;
-            string user = null;
-            string password = null;
-            string address = null;
-            string scheme = null;
-
-            // TODO refactor
-            if (rest.Split("://").Length > 1) {
-                scheme = rest.Split("://")[0];
-                rest = rest.Split("://")[1];
-            }
-
-            if (rest.Split('@').Length > 1) {
-                string credentials = rest.Split('@')[0];
-                rest = rest.Split('@')[1];
-                user = credentials.Split(':')[0];
-                if (credentials.Split(':').Length > 1) {
-                    password = credentials.Split(':')[1];
-                }
-            }
-
-            if (rest.Split('/').Length > 1) {
-                address = rest.Split('/')[1];
-                hostport = rest.Split('/')[0];
-            } else {
-                hostport = rest;
-            }
-
-            if (hostport.Split(':').Length > 1) {
-               serverHost = hostport.Split(':')[0];
-               serverPort = int.Parse(hostport.Split(':')[1]);
-            } else {
-               serverHost = hostport;
-               serverPort = 5672;
-	    }
-
             this.client = IClient.Create();
+
+            (_, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
 
             Apache.Qpid.Proton.Client.ConnectionOptions conn_options = new Apache.Qpid.Proton.Client.ConnectionOptions();
             conn_options.User = user;
             conn_options.Password = password;
 
-	    if((options as BasicOptions).LogLib.ToUpper() == "TRANSPORT_FRM") {
-		// not yet implemented in qpid-proton-dotnet library"
+            if((options as BasicOptions).LogLib.ToUpper() == "TRANSPORT_FRM") {
+                // not yet implemented in qpid-proton-dotnet library"
                 conn_options.TraceFrames = true;
             }
 
