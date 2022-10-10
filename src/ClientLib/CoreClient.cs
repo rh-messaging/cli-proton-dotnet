@@ -85,35 +85,35 @@ namespace ClientLib
             string password = null;
             string address = null;
             string scheme = null;
-            string [] addr_parts;
+            string [] addrParts;
 
-            addr_parts= rest.Split("://");
-            if (addr_parts.Length > 1) {
-                scheme = addr_parts[0];
-                rest = addr_parts[1];
+            addrParts= rest.Split("://");
+            if (addrParts.Length > 1) {
+                scheme = addrParts[0];
+                rest = addrParts[1];
             }
 
-            addr_parts= rest.Split("@");
-            if (addr_parts.Length > 1) {
-                string credentials = addr_parts[0];
-                rest = addr_parts[1];
-                addr_parts= credentials.Split(":");
-                user = addr_parts[0];
-                if (addr_parts.Length > 1) {
-                    password = addr_parts[1];
+            addrParts= rest.Split("@");
+            if (addrParts.Length > 1) {
+                string credentials = addrParts[0];
+                rest = addrParts[1];
+                addrParts= credentials.Split(":");
+                user = addrParts[0];
+                if (addrParts.Length > 1) {
+                    password = addrParts[1];
                 }
             }
 
-            addr_parts= rest.Split("/");
-            if (addr_parts.Length > 1) {
-                rest = addr_parts[0];
-                address = addr_parts[1];
+            addrParts= rest.Split("/");
+            if (addrParts.Length > 1) {
+                rest = addrParts[0];
+                address = addrParts[1];
             }
 
-            addr_parts= rest.Split(":");
-            if (addr_parts.Length > 1) {
-                serverHost = addr_parts[0];
-                serverPort = int.Parse( addr_parts[1]);
+            addrParts= rest.Split(":");
+            if (addrParts.Length > 1) {
+                serverHost = addrParts[0];
+                serverPort = int.Parse( addrParts[1]);
             } else {
                 serverHost = rest;
             }
@@ -132,22 +132,22 @@ namespace ClientLib
 
             (_, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
 
-            Apache.Qpid.Proton.Client.ConnectionOptions conn_options = new Apache.Qpid.Proton.Client.ConnectionOptions();
-            conn_options.User = user;
-            conn_options.Password = password;
+            Apache.Qpid.Proton.Client.ConnectionOptions connOptions = new Apache.Qpid.Proton.Client.ConnectionOptions();
+            connOptions.User = user;
+            connOptions.Password = password;
 
             if((options as BasicOptions).LogLib.ToUpper() == "TRANSPORT_FRM") {
                 // not yet implemented in qpid-proton-dotnet library"
-                conn_options.TraceFrames = true;
+                connOptions.TraceFrames = true;
             }
 
             // TODO SSL
             if (options.ConnSSL) {
-                conn_options.SslOptions.SslEnabled = true;
-                conn_options.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors; // Self signed
+                connOptions.SslOptions.SslEnabled = true;
+                connOptions.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors; // Self signed
             }
 
-            this.connection = this.client.Connect(serverHost, serverPort, conn_options);
+            this.connection = this.client.Connect(serverHost, serverPort, connOptions);
         }
 
         /// <summary>

@@ -147,10 +147,10 @@ namespace ClientLib
                 SenderOptions.SendTimeout = options.Timeout;
             }
 
-            bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+            bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
             ISender sender;
-            if (tx_batch_flag) {
+            if (txBatchFlag) {
                 sender = this.session.OpenSender(options.Address, SenderOptions);
             } else {
                 sender = this.connection.OpenSender(options.Address, SenderOptions);
@@ -208,7 +208,7 @@ namespace ClientLib
                         Utils.Sleep4Next(ts, options.MsgCount, (options.Duration), nSent);
 
                 }
-                //set up tx_batch_flag
+                //set up txBatchFlag
                 if ((options.MsgCount - nSent) < options.TxSize)
                 {
                     txFlag = false;
@@ -276,7 +276,7 @@ namespace ClientLib
             try
             {
                 this.ParseArguments(args, options);
-                bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+                bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                 //init timestamping
                 this.ptsdata = Utils.TsInit(options.LogStats);
@@ -287,7 +287,7 @@ namespace ClientLib
                 Utils.TsSnapStore(this.ptsdata, 'C', options.LogStats);
 
                 // session are only used for transactions
-                if (tx_batch_flag)
+                if (txBatchFlag)
                     this.CreateSession();
 
                 Utils.TsSnapStore(this.ptsdata, 'D', options.LogStats);
@@ -302,7 +302,7 @@ namespace ClientLib
                 Utils.TsSnapStore(this.ptsdata, 'E', options.LogStats);
 
                 //sending of messages
-                if (tx_batch_flag)
+                if (txBatchFlag)
                     this.TransactionSend(sender, options);
                 else
                     this.Send(sender, options);

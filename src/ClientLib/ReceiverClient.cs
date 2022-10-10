@@ -37,9 +37,9 @@ namespace ClientLib
             if (options.RecvBrowse)
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
 
-            bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+            bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
             IReceiver receiver;
-            if (tx_batch_flag) {
+            if (txBatchFlag) {
                 receiver = this.session.OpenReceiver(options.Address, receiverOptions);
             } else {
                 receiver = this.connection.OpenReceiver(options.Address, receiverOptions);
@@ -209,7 +209,7 @@ namespace ClientLib
                 }
                 else
                 {
-                    bool tx_batch_flag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+                    bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
                     //init timestamping
                     this.ptsdata = Utils.TsInit(options.LogStats);
@@ -221,7 +221,7 @@ namespace ClientLib
                     Utils.TsSnapStore(this.ptsdata, 'C', options.LogStats);
 
                     // session are only used for transactions
-                    if (tx_batch_flag)
+                    if (txBatchFlag)
                         this.CreateSession();
 
                     Utils.TsSnapStore(this.ptsdata, 'D', options.LogStats);
@@ -243,7 +243,7 @@ namespace ClientLib
                         this.ReceiveAll(receiver, options);
                     else
                     {
-                        if (tx_batch_flag)
+                        if (txBatchFlag)
                             this.TransactionReceive(receiver, options);
                         else
                             this.Receive(receiver, options);

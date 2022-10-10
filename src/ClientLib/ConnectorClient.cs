@@ -53,13 +53,13 @@ namespace ClientLib
                 {
 
                     (_, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
-                    Apache.Qpid.Proton.Client.ConnectionOptions conn_options = new Apache.Qpid.Proton.Client.ConnectionOptions();
-                    conn_options.User = user;
-                    conn_options.Password = password;
+                    Apache.Qpid.Proton.Client.ConnectionOptions connOptions = new Apache.Qpid.Proton.Client.ConnectionOptions();
+                    connOptions.User = user;
+                    connOptions.Password = password;
 
                     for (int i = 0; i < options.MsgCount; i++)
                     {
-                        connections.Add(client.Connect(serverHost, serverPort, conn_options));
+                        connections.Add(client.Connect(serverHost, serverPort, connOptions));
                     }
                 }
 
