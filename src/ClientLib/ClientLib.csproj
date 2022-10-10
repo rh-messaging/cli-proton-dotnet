@@ -22,7 +22,7 @@
     <TargetFramework>$(DefaultExeTargetFrameworks)</TargetFramework>
     <TargetFrameworkVersion>6.0</TargetFrameworkVersion>
     <RollForward>$(DefaultExeRollForwardPolicy)</RollForward>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <IsPackable>false</IsPackable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

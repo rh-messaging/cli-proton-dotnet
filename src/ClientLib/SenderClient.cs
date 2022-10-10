@@ -348,12 +348,5 @@ namespace ClientLib
             }
             Environment.Exit(this.exitCode);
         }
-
-        // TODO: get rid of this, import as class library
-        [STAThread]
-        static void Main()
-        {
-        }
-
     }
 }
