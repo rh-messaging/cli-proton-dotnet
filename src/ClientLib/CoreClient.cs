@@ -147,7 +147,7 @@ namespace ClientLib
                 conn_options.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors; // Self signed
             }
 
-            this.connection = client.Connect(serverHost, serverPort, conn_options);
+            this.connection = this.client.Connect(serverHost, serverPort, conn_options);
         }
 
         /// <summary>
