@@ -52,10 +52,14 @@ namespace ClientLib
                 if (Regex.IsMatch(options.ObjCtrl, "[CESR]"))
                 {
 
+                    (_, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
+                    Apache.Qpid.Proton.Client.ConnectionOptions conn_options = new Apache.Qpid.Proton.Client.ConnectionOptions();
+                    conn_options.User = user;
+                    conn_options.Password = password;
+
                     for (int i = 0; i < options.MsgCount; i++)
                     {
-                        // TODO, host, port, options (incl. credentials)
-                        connections.Add(client.Connect(options.Url));
+                        connections.Add(client.Connect(serverHost, serverPort, conn_options));
                     }
                 }
 
