@@ -17,9 +17,31 @@
 using System;
 using System.Collections.Generic;
 using Apache.Qpid.Proton.Client;
+using Apache.Qpid.Proton.Types;
 
 namespace ClientLib
 {
+
+    /// <summary>
+    /// AMQP JMS selecror class
+    /// </summary>
+    public class AmqpJmsSelectorType : IDescribedType
+    {
+        private string selector;
+        public object Descriptor => 0x0000468C00000004UL;
+        public object Described => selector;
+
+        public AmqpJmsSelectorType(string selector)
+        {
+            this.selector = selector;
+        }
+
+        public override string ToString()
+        {
+            return "AmqpJmsSelectorType{" + selector + "}";
+        }
+    }
+
     /// <summary>
     /// Class represent receiver from amqp broker
     /// </summary>
@@ -37,6 +59,14 @@ namespace ClientLib
             if (options.RecvBrowse)
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
 
+            if (!string.IsNullOrEmpty(options.MsgSelector))
+            {
+               IDescribedType clientJmsSelector = new AmqpJmsSelectorType(options.MsgSelector);
+               IDictionary<string, object> filters = new Dictionary<string, object>();
+               filters.Add("jms-selector", clientJmsSelector);
+               receiverOptions.SourceOptions.Filters = filters;
+            }
+
             bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
             IReceiver receiver;
             if (txBatchFlag) {
@@ -49,7 +79,7 @@ namespace ClientLib
         #endregion
 
         #region Listener methods
-	// TODO Listener
+        // TODO Listener
         #endregion
 
         #region Receive methods
