@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Receiver", "src\Receiver\Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sender", "src\Sender\Sender.csproj", "{50217F2B-D741-4EA7-8540-54562A292854}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proton.Client", "..\qpid-proton-dotnet\src\Proton.Client\Proton.Client.csproj", "{B0DDF8FC-FBCE-44F6-9FA2-AF263A251A5E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proton", "..\qpid-proton-dotnet\src\Proton\Proton.csproj", "{1DB91950-2B92-4F0B-A06A-8CFEAC775E7A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
