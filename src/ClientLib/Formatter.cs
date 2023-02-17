@@ -621,7 +621,7 @@ namespace ClientLib
         private static object Hash(object msgBody)
         {
             byte[] hash;
-            SHA1 sha = new SHA1CryptoServiceProvider();
+            SHA1 sha = SHA1.Create();
             if (msgBody is byte[])
                 hash = sha.ComputeHash((byte[]) msgBody);
             else if (msgBody is string)

@@ -16,11 +16,8 @@
 -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../../qpid-proton-dotnet/common.props" />
-
   <PropertyGroup>
-    <TargetFramework>$(DefaultExeTargetFrameworks)</TargetFramework>
-    <RollForward>$(DefaultExeRollForwardPolicy)</RollForward>
+    <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -32,15 +29,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\qpid-proton-dotnet\src\Proton\Proton.csproj" />
-    <ProjectReference Include="..\..\..\qpid-proton-dotnet\src\Proton.Client\Proton.Client.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ClientLib\ClientLib.csproj">
       <Project>{6dc6d0f4-85f4-4380-9c49-ff26bc83d000}</Project>
       <Name>ClientLib</Name>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Apache.Qpid.Proton.Client" Version="1.0.0-M6" />
   </ItemGroup>
 
   <Target Name="PostClean" AfterTargets="Clean">
