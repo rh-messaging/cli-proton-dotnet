@@ -6,10 +6,7 @@ cli-proton-dotnet is a collection of command-line messaging clients built on [Ap
 
 cli-proton-dotnet requires [.NET](https://dotnet.microsoft.com/) v6.0+ to run.
 
-Currently, installation runs from source. Both qpid-proton-dotnet and cli-proton-python needs to be cloned to same directory.
-
 ```sh
-git clone https://github.com/apache/qpid-proton-dotnet
 git clone https://github.com/rh-messaging/cli-proton-dotnet.git
 cd cli-proton-dotnet
 dotnet build
