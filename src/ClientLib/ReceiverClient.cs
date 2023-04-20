@@ -58,6 +58,15 @@ namespace ClientLib
             Apache.Qpid.Proton.Client.ReceiverOptions receiverOptions = new Apache.Qpid.Proton.Client.ReceiverOptions();
             if (options.RecvBrowse)
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
+            if (String.IsNullOrEmpty(options.Action))
+                receiverOptions.AutoAccept = false;
+
+            if (options.Settlement.Equals(SettlementMode.AtLeastOnce))
+                receiverOptions.DeliveryMode = DeliveryMode.AtLeastOnce;
+            else if (options.Settlement.Equals(SettlementMode.AtMostOnce))
+                receiverOptions.DeliveryMode = DeliveryMode.AtMostOnce;
+            else if (options.Settlement.Equals(SettlementMode.ExactlyOnce))
+                throw new NotImplementedException("not supported by Qpid Proton DotNet client");
 
             if (!string.IsNullOrEmpty(options.MsgSelector))
             {
@@ -99,11 +108,14 @@ namespace ClientLib
                 {
                     Formatter.LogMessage(message, options);
                     Utils.TsSnapStore(this.ptsdata, 'F', options.LogStats);
-
-                    if (!String.IsNullOrEmpty(options.MsgSelector))
-                    {
-                        // TODO accept message?
-                    }
+                }
+                if (String.IsNullOrEmpty(options.Action)) {
+                    if (options.Action.ToLower().Equals("reject"))
+                        delivery.Reject("condition", "description");
+                    else if (options.Action.ToLower().Equals("release"))
+                        delivery.Release();
+                    else if (!options.Action.ToLower().Equals("noack"))
+                        delivery.Accept();
                 }
             }
         }
