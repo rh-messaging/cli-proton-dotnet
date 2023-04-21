@@ -447,7 +447,6 @@ namespace ClientLib
             this.Action = String.Empty;
             this.RecvListenerPort = 5672;
             this.Timeout = TimeSpan.FromSeconds(1);
-            this.isInfinityReceiving = false;
 
             //add options
             this.Add("action=", "action on acquired message [accept, release, reject]",
@@ -465,10 +464,7 @@ namespace ClientLib
             this.Add("t|timeout=", "timeout",
                 (int timeout) => {
                     if (timeout == -1)
-                    {
-                        this.Timeout = TimeSpan.FromDays(100);
-                        this.isInfinityReceiving = true;
-                    }
+                        this.Timeout = TimeSpan.FromMilliseconds(-1);
                     else
                         this.Timeout = TimeSpan.FromSeconds(timeout);
                 });

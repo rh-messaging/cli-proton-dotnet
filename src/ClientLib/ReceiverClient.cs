@@ -58,7 +58,7 @@ namespace ClientLib
             Apache.Qpid.Proton.Client.ReceiverOptions receiverOptions = new Apache.Qpid.Proton.Client.ReceiverOptions();
             if (options.RecvBrowse)
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
-            if (String.IsNullOrEmpty(options.Action))
+            if (!String.IsNullOrEmpty(options.Action))
                 receiverOptions.AutoAccept = false;
 
             if (options.Settlement.Equals(SettlementMode.AtLeastOnce))
@@ -85,41 +85,25 @@ namespace ClientLib
             }
             return receiver;
         }
-        #endregion
 
-        #region Listener methods
-        // TODO Listener
+        /// <summary>
+        /// Method performs desired action on delivery
+        /// </summary>
+        /// <param name="delivery">delivery object</param>
+        /// <param name="action">acknowlegde action (accept, reject, release, noack)</param>
+        /// <returns>null</returns>
+        private void DeliveryAcknowledge(IDelivery delivery, string action)
+        {
+            if (action.ToLower().Equals("reject"))
+                delivery.Reject("test-condition", "test-description");
+            else if (action.ToLower().Equals("release"))
+                delivery.Release();
+            else if (!action.ToLower().Equals("noack"))
+                delivery.Accept();
+        }
         #endregion
 
         #region Receive methods
-        /// <summary>
-        /// Method for browse or selector receive
-        /// </summary>
-        /// <param name="receiver">receiver link</param>
-        /// <param name="options">receiver options</param>
-        private void ReceiveAll(IReceiver receiver, ReceiverOptions options)
-        {
-            IDelivery delivery = null;
-
-            while ((delivery = receiver.Receive(options.Timeout)) != null || options.isInfinityReceiving)
-            {
-                IMessage<object> message = delivery.Message();
-                if (message != null)
-                {
-                    Formatter.LogMessage(message, options);
-                    Utils.TsSnapStore(this.ptsdata, 'F', options.LogStats);
-                }
-                if (String.IsNullOrEmpty(options.Action)) {
-                    if (options.Action.ToLower().Equals("reject"))
-                        delivery.Reject("condition", "description");
-                    else if (options.Action.ToLower().Equals("release"))
-                        delivery.Release();
-                    else if (!options.Action.ToLower().Equals("noack"))
-                        delivery.Accept();
-                }
-            }
-        }
-
         /// <summary>
         /// Method for transactional receiving messages
         /// </summary>
@@ -130,7 +114,7 @@ namespace ClientLib
             bool txFlag = true;
             int nReceived = 0;
             IMessage<object> message = null;
-                IDelivery delivery = null;
+            IDelivery delivery = null;
 
             this.session.BeginTransaction();
 
@@ -144,6 +128,10 @@ namespace ClientLib
                         }
 
                         message = delivery.Message();
+
+		        if (!String.IsNullOrEmpty(options.Action))
+		            DeliveryAcknowledge(delivery, options.Action);
+
                         if (message != null)
                         {
                             Formatter.LogMessage(message, options);
@@ -212,6 +200,9 @@ namespace ClientLib
 
                 IMessage<object> message = delivery.Message();
 
+		if (!String.IsNullOrEmpty(options.Action))
+		    DeliveryAcknowledge(delivery, options.Action);
+
                 Formatter.LogMessage(message, options);
                 nReceived++;
 
@@ -223,9 +214,7 @@ namespace ClientLib
                 }
 
                 if ((options.MsgCount > 0) && (nReceived == options.MsgCount))
-                {
                     break;
-                }
 
                 Utils.TsSnapStore(this.ptsdata, 'F', options.LogStats);
             }
@@ -280,16 +269,11 @@ namespace ClientLib
                     if (options.Capacity > -1)
                         receiver.AddCredit(Convert.ToUInt32(options.Capacity));
 
-                    //receiving of messages
-                    if (options.RecvBrowse || !String.IsNullOrEmpty(options.MsgSelector) || options.isInfinityReceiving)
-                        this.ReceiveAll(receiver, options);
+		    //receiving of messages
+                    if (txBatchFlag)
+                        this.TransactionReceive(receiver, options);
                     else
-                    {
-                        if (txBatchFlag)
-                            this.TransactionReceive(receiver, options);
-                        else
-                            this.Receive(receiver, options);
-                    }
+                        this.Receive(receiver, options);
 
                     if (options.CloseSleep > 0)
                     {
