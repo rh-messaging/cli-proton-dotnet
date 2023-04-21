@@ -147,6 +147,13 @@ namespace ClientLib
                 SenderOptions.SendTimeout = options.Timeout;
             }
 
+            if (options.Settlement.Equals(SettlementMode.AtLeastOnce))
+                SenderOptions.DeliveryMode = DeliveryMode.AtLeastOnce;
+            else if (options.Settlement.Equals(SettlementMode.AtMostOnce))
+                SenderOptions.DeliveryMode = DeliveryMode.AtMostOnce;
+            else if (options.Settlement.Equals(SettlementMode.ExactlyOnce))
+                throw new NotImplementedException("not supported by Qpid Proton DotNet client");
+
             bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
             ISender sender;
