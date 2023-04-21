@@ -79,7 +79,7 @@ namespace ClientLib
         #endregion
 
         #region Listener methods
-        // TODO Listener
+        // Listener functionality is not available Qpid Proton DotNet client
         #endregion
 
         #region Receive methods
@@ -235,7 +235,7 @@ namespace ClientLib
 
                 if (options.RecvListener)
                 {
-                    // TODO listener
+                    throw new NotImplementedException("Listener functionality is not available Qpid Proton DotNet client");
                 }
                 else
                 {
@@ -257,8 +257,6 @@ namespace ClientLib
                     Utils.TsSnapStore(this.ptsdata, 'D', options.LogStats);
 
                     IReceiver receiver = this.PrepareReceiverLink(options);
-
-                    IMessage<object> message = IMessage<object>.Create();
 
                     this.ts = Utils.GetTime();
 
@@ -293,8 +291,7 @@ namespace ClientLib
                     //report timestamping
                     if (this.ptsdata.Count > 0)
                     {
-                        Console.WriteLine("STATS " + Utils.TsReport(this.ptsdata,
-                            nReceived, message.Body.ToString().Length * sizeof(Char), 0));
+                        Console.WriteLine("STATS " + Utils.TsReport(this.ptsdata, nReceived, 0, 0));
                     }
                 }
                 this.exitCode = ReturnCode.ERROR_SUCCESS;

@@ -87,7 +87,7 @@ namespace ClientLib
             string scheme = null;
             string [] addrParts;
 
-            addrParts= rest.Split("://");
+            addrParts= rest.Split(new string[] { "://" }, StringSplitOptions.None);
             if (addrParts.Length > 1) {
                 scheme = addrParts[0];
                 rest = addrParts[1];
@@ -129,8 +129,7 @@ namespace ClientLib
         protected void CreateConnection(ConnectionOptions options)
         {
             this.client = IClient.Create();
-
-            (_, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
+            (string scheme, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
 
             Apache.Qpid.Proton.Client.ConnectionOptions connOptions = new Apache.Qpid.Proton.Client.ConnectionOptions();
             connOptions.User = user;
@@ -141,10 +140,26 @@ namespace ClientLib
                 connOptions.TraceFrames = true;
             }
 
-            // TODO SSL
-            if (options.ConnSSL) {
+            if (options.ConnSSL || scheme.Equals("amqps")) {
                 connOptions.SslOptions.SslEnabled = true;
-                connOptions.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors; // Self signed
+                if (!string.IsNullOrEmpty(options.ConnSSLCertificate)) {
+                    connOptions.SslOptions.ClientCertificatePath = options.ConnSSLCertificate;
+                    if (!string.IsNullOrEmpty(options.ConnSSLPassword)) {
+                        connOptions.SslOptions.ClientCertificatePassword = options.ConnSSLCertificate;
+                    }
+                }
+                if (!options.ConnSSLVerifyPeerSkipTrustCheck.Equals(true)) {
+                    // allow self signed certificate
+                    connOptions.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors;
+                }
+                if (!options.ConnSSLVerifyPeer.Equals(true)) {
+                    connOptions.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors |
+			                                                    SslPolicyErrors.RemoteCertificateNameMismatch |
+			                                                    SslPolicyErrors.RemoteCertificateNotAvailable;
+                }
+                if (!options.ConnSSLVerifyPeerName.Equals(true)) {
+                    connOptions.SslOptions.VerifyHost = false;
+                }
             }
 
             this.connection = this.client.Connect(serverHost, serverPort, connOptions);

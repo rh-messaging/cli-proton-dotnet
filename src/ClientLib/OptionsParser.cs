@@ -69,12 +69,16 @@ namespace ClientLib
     public abstract class ConnectionOptions : Options
     {
         //Properties
-        private string amqpPrefix = "amqp://";
         public string Url { get; protected set; }
         public int Heartbeat { get; protected set; }
         public string AuthMech { get; protected set; }
         public int FrameSize { get; private set; }
         public bool ConnSSL { get; protected set; }
+        public string ConnSSLCertificate { get; protected set; }
+        public string ConnSSLPassword { get; protected set; }
+        public bool ConnSSLVerifyPeer { get; protected set; }
+        public bool ConnSSLVerifyPeerSkipTrustCheck { get; protected set; }
+        public bool ConnSSLVerifyPeerName { get; protected set; }
 
         /// <summary>
         /// Constructor
@@ -89,8 +93,8 @@ namespace ClientLib
 
             //add options
             this.Add("b|broker=", "-b VALUE, --broker-url VALUE  url of broker to connect to (default amqp://127.0.0.1:5672)",
-                (string url) => { this.Url = this.amqpPrefix + url; });
-            this.Add("conn-heartbeat=", "time in s to delay between heartbeat packets",
+                (string url) => { this.Url = url; });
+            this.Add("conn-heartbeat=", "Time in s to delay between heartbeat packets",
                 (int heartbeat) => { this.Heartbeat = heartbeat * this._toSecConstant; });
             this.Add("conn-auth-mechanisms=", "VALUE  SASL mechanisms; currently supported PLAIN | GSSAPI | EXTERNAL",
                 (string authMech) => { this.AuthMech = authMech; });
@@ -98,6 +102,16 @@ namespace ClientLib
                 (int frameSize) => { this.FrameSize = frameSize; });
             this.Add("conn-ssl=", "Enable ssl connection without verify host adn enable trustAll",
                 (bool connSSL) => { this.ConnSSL = connSSL; });
+            this.Add("conn-ssl-certificate", "Path to client certificate, enables client authentication",
+                (string connSSLCertificate) => { this.ConnSSLCertificate = connSSLCertificate; });
+            this.Add("conn-ssl-password=", "Client's certificate database password",
+                (string connSSLPassword) => { this.ConnSSLPassword = connSSLPassword; });
+            this.Add("conn-ssl-verify-peer=", "Validates server certificate",
+                (bool connSSLVerifyPeer) => { this.ConnSSLVerifyPeer = connSSLVerifyPeer; });
+            this.Add("conn-ssl-verify-peer-skip-trust-check=", "Validates server certificate, no trust check (allows self signed certificates in chain)",
+                (bool connSSLVerifyPeerSkipTrustCheck) => { this.ConnSSLVerifyPeerSkipTrustCheck = connSSLVerifyPeerSkipTrustCheck; });
+            this.Add("conn-ssl-verify-peer-name=", "Verifies connection url against server hostname",
+                (bool connSSLVerifyPeerName) => { this.ConnSSLVerifyPeerName = connSSLVerifyPeerName; });
         }
     }
 
