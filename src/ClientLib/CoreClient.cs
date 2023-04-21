@@ -84,7 +84,7 @@ namespace ClientLib
             string user = null;
             string password = null;
             string address = null;
-            string scheme = null;
+            string scheme = "amqp";
             string [] addrParts;
 
             addrParts= rest.Split(new string[] { "://" }, StringSplitOptions.None);
