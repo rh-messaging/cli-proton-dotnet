@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/opt/cli-proton-dotnet/Connector "$@"
