@@ -148,10 +148,6 @@ namespace ClientLib
                         connOptions.SslOptions.ClientCertificatePassword = options.ConnSSLCertificate;
                     }
                 }
-                if (!options.ConnSSLVerifyPeerSkipTrustCheck.Equals(true)) {
-                    // allow self signed certificate
-                    connOptions.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors;
-                }
                 if (!options.ConnSSLVerifyPeer.Equals(true)) {
                     connOptions.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors |
 			                                                    SslPolicyErrors.RemoteCertificateNameMismatch |
