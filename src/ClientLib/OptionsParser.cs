@@ -77,7 +77,6 @@ namespace ClientLib
         public string ConnSSLCertificate { get; protected set; }
         public string ConnSSLPassword { get; protected set; }
         public bool ConnSSLVerifyPeer { get; protected set; }
-        public bool ConnSSLVerifyPeerSkipTrustCheck { get; protected set; }
         public bool ConnSSLVerifyPeerName { get; protected set; }
 
         /// <summary>
@@ -108,8 +107,6 @@ namespace ClientLib
                 (string connSSLPassword) => { this.ConnSSLPassword = connSSLPassword; });
             this.Add("conn-ssl-verify-peer=", "Validates server certificate",
                 (bool connSSLVerifyPeer) => { this.ConnSSLVerifyPeer = connSSLVerifyPeer; });
-            this.Add("conn-ssl-verify-peer-skip-trust-check=", "Validates server certificate, no trust check (allows self signed certificates in chain)",
-                (bool connSSLVerifyPeerSkipTrustCheck) => { this.ConnSSLVerifyPeerSkipTrustCheck = connSSLVerifyPeerSkipTrustCheck; });
             this.Add("conn-ssl-verify-peer-name=", "Verifies connection url against server hostname",
                 (bool connSSLVerifyPeerName) => { this.ConnSSLVerifyPeerName = connSSLVerifyPeerName; });
         }
