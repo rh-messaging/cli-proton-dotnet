@@ -145,7 +145,7 @@ namespace ClientLib
                 if (!string.IsNullOrEmpty(options.ConnSSLCertificate)) {
                     connOptions.SslOptions.ClientCertificatePath = options.ConnSSLCertificate;
                     if (!string.IsNullOrEmpty(options.ConnSSLPassword)) {
-                        connOptions.SslOptions.ClientCertificatePassword = options.ConnSSLCertificate;
+                        connOptions.SslOptions.ClientCertificatePassword = options.ConnSSLPassword;
                     }
                 }
                 if (!options.ConnSSLVerifyPeer.Equals(true)) {
