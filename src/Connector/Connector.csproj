@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Apache.Qpid.Proton.Client" Version="1.0.0-M6" />
+    <PackageReference Include="Apache.Qpid.Proton.Client" Version="1.0.0-M8" />
   </ItemGroup>
 
   <Target Name="PostClean" AfterTargets="Clean">
