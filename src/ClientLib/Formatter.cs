@@ -122,8 +122,8 @@ namespace ClientLib
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
             if (msg.HasProperties)
                 msgDict.Add("properties", amsg.ApplicationProperties.Value);
-            // if (msg.HasAnnotations)
-            //    msgDict.Add("message-annotations", amsg.Annotations.Value);
+            if (msg.HasAnnotations)
+                msgDict.Add("message-annotations", amsg.Annotations.Value);
             Console.WriteLine(FormatMap(msgDict));
         }
 
@@ -158,8 +158,8 @@ namespace ClientLib
             msgDict.Add("content", hashContent ? Hash(msg.Body) : msg.Body);
             if (msg.HasProperties)
                 msgDict.Add("properties", amsg.ApplicationProperties.Value);
-            // if (msg.HasAnnotations)
-            //    msgDict.Add("message-annotations", amsg.Annotations.Value);
+            if (msg.HasAnnotations)
+                msgDict.Add("message-annotations", amsg.Annotations.Value);
             Console.WriteLine(JsonConvert.SerializeObject(msgDict));
         }
 

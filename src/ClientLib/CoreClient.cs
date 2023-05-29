@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Net.Security;
 
 using Apache.Qpid.Proton.Client;
+using ConnOptions = Apache.Qpid.Proton.Client.ConnectionOptions;
 
 namespace ClientLib
 {
@@ -32,7 +33,7 @@ namespace ClientLib
         protected List<double> ptsdata;
         protected double ts;
         protected string address;
-        protected IClient client;
+        protected IClient container;
         protected ISession session;
         protected IConnection connection;
 
@@ -87,13 +88,13 @@ namespace ClientLib
             string scheme = "amqp";
             string [] addrParts;
 
-            addrParts= rest.Split(new string[] { "://" }, StringSplitOptions.None);
+            addrParts = rest.Split(new string[] { "://" }, StringSplitOptions.None);
             if (addrParts.Length > 1) {
                 scheme = addrParts[0];
                 rest = addrParts[1];
             }
 
-            addrParts= rest.Split("@");
+            addrParts = rest.Split("@");
             if (addrParts.Length > 1) {
                 string credentials = addrParts[0];
                 rest = addrParts[1];
@@ -104,16 +105,16 @@ namespace ClientLib
                 }
             }
 
-            addrParts= rest.Split("/");
+            addrParts = rest.Split("/");
             if (addrParts.Length > 1) {
                 rest = addrParts[0];
                 address = addrParts[1];
             }
 
-            addrParts= rest.Split(":");
+            addrParts = rest.Split(":");
             if (addrParts.Length > 1) {
                 serverHost = addrParts[0];
-                serverPort = int.Parse( addrParts[1]);
+                serverPort = int.Parse(addrParts[1]);
             } else {
                 serverHost = rest;
             }
@@ -128,10 +129,10 @@ namespace ClientLib
         /// </summary>
         protected void CreateConnection(ConnectionOptions options)
         {
-            this.client = IClient.Create();
-            (string scheme, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
+            this.container = IClient.Create();
+            (string scheme, string user, string password, string serverHost, int serverPort, string address) = ParseUrl(options.Url);
 
-            Apache.Qpid.Proton.Client.ConnectionOptions connOptions = new Apache.Qpid.Proton.Client.ConnectionOptions();
+            ConnOptions connOptions = new ConnOptions();
             connOptions.User = user;
             connOptions.Password = password;
 
@@ -158,7 +159,13 @@ namespace ClientLib
                 }
             }
 
-            this.connection = this.client.Connect(serverHost, serverPort, connOptions);
+            if (options.FrameSize > -1)
+                connOptions.MaxFrameSize = (uint)options.FrameSize;
+            if (options.Heartbeat > -1)
+                connOptions.IdleTimeout = (uint)options.Heartbeat;
+
+            this.address = address;
+            this.connection = this.container.Connect(serverHost, serverPort, connOptions);
         }
 
         /// <summary>
@@ -204,11 +211,11 @@ namespace ClientLib
         /// </summary>
         protected void CloseClient()
         {
-            if (this.client != null)
+            if (this.container!= null)
             {
                 this.CloseSession();
                 this.CloseConnection();
-                this.client.Close();
+                this.container.Close();
             }
         }
         #endregion

@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 using Apache.Qpid.Proton.Client;
+using ConnOptions = Apache.Qpid.Proton.Client.ConnectionOptions;
 
 namespace ClientLib
 {
@@ -53,7 +54,7 @@ namespace ClientLib
                 {
 
                     (_, string user, string password, string serverHost, int serverPort, _) = ParseUrl(options.Url);
-                    Apache.Qpid.Proton.Client.ConnectionOptions connOptions = new Apache.Qpid.Proton.Client.ConnectionOptions();
+                    ConnOptions connOptions = new ConnOptions();
                     connOptions.User = user;
                     connOptions.Password = password;
 
@@ -84,7 +85,7 @@ namespace ClientLib
                         }
                     }
 
-                    string address = options.Address;
+                    string address = this.address;
 
                     if (address != String.Empty)
                     {

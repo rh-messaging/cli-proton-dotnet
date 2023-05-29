@@ -16,8 +16,10 @@
 
 using System;
 using System.Collections.Generic;
+
 using Apache.Qpid.Proton.Client;
 using Apache.Qpid.Proton.Types;
+using RecvOptions = Apache.Qpid.Proton.Client.ReceiverOptions;
 
 namespace ClientLib
 {
@@ -55,7 +57,8 @@ namespace ClientLib
         /// <returns>build receiver link</returns>
         private IReceiver PrepareReceiverLink(ReceiverOptions options)
         {
-            Apache.Qpid.Proton.Client.ReceiverOptions receiverOptions = new Apache.Qpid.Proton.Client.ReceiverOptions();
+            string addr;
+            RecvOptions receiverOptions = new RecvOptions();
             if (options.RecvBrowse)
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
             if (!String.IsNullOrEmpty(options.Action))
@@ -77,11 +80,19 @@ namespace ClientLib
             }
 
             bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
+
+
+            if (this.address != null) {
+                addr = this.address;
+            } else {
+                addr = options.Address;
+            }
+
             IReceiver receiver;
             if (txBatchFlag) {
-                receiver = this.session.OpenReceiver(options.Address, receiverOptions);
+                receiver = this.session.OpenReceiver(addr, receiverOptions);
             } else {
-                receiver = this.connection.OpenReceiver(options.Address, receiverOptions);
+                receiver = this.connection.OpenReceiver(addr, receiverOptions);
             }
             return receiver;
         }
