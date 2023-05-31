@@ -136,10 +136,8 @@ namespace ClientLib
             connOptions.User = user;
             connOptions.Password = password;
 
-            if((options as BasicOptions).LogLib.ToUpper() == "TRANSPORT_FRM") {
-                // not yet implemented in qpid-proton-dotnet library"
+            if((options as BasicOptions).LogLib.ToUpper() == "TRANSPORT_FRM")
                 connOptions.TraceFrames = true;
-            }
 
             if (options.ConnSSL || scheme.Equals("amqps")) {
                 connOptions.SslOptions.SslEnabled = true;
@@ -149,14 +147,18 @@ namespace ClientLib
                         connOptions.SslOptions.ClientCertificatePassword = options.ConnSSLPassword;
                     }
                 }
-                if (!options.ConnSSLVerifyPeer.Equals(true)) {
+                if (!options.ConnSSLVerifyPeer.Equals(true))
                     connOptions.SslOptions.AllowedSslPolicyErrorsOverride = SslPolicyErrors.RemoteCertificateChainErrors |
 			                                                    SslPolicyErrors.RemoteCertificateNameMismatch |
 			                                                    SslPolicyErrors.RemoteCertificateNotAvailable;
-                }
-                if (!options.ConnSSLVerifyPeerName.Equals(true)) {
+                if (!options.ConnSSLVerifyPeerName.Equals(true))
                     connOptions.SslOptions.VerifyHost = false;
-                }
+            }
+
+            if (options.ConnReconnect.Equals(true)) {
+                connOptions.ReconnectEnabled = true;
+                connOptions.ReconnectOptions.ReconnectDelay = (int)options.ConnReconnectInterval;
+                connOptions.ReconnectOptions.MaxReconnectAttempts = options.ConnReconnectLimit;
             }
 
             if (options.FrameSize > -1)

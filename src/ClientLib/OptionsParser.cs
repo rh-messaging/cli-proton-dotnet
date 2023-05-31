@@ -78,6 +78,9 @@ namespace ClientLib
         public string ConnSSLPassword { get; protected set; }
         public bool ConnSSLVerifyPeer { get; protected set; }
         public bool ConnSSLVerifyPeerName { get; protected set; }
+        public bool ConnReconnect { get; private set; }
+        public float ConnReconnectInterval { get; private set; }
+        public int ConnReconnectLimit { get; private set; }
 
         /// <summary>
         /// Constructor
@@ -89,6 +92,9 @@ namespace ClientLib
             this.Heartbeat = -1;
             this.AuthMech = String.Empty;
             this.FrameSize = -1;
+            this.ConnReconnect = true;
+            this.ConnReconnectInterval = 10;
+            this.ConnReconnectLimit = -1;
 
             //add options
             this.Add("b|broker=", "-b VALUE, --broker-url VALUE  url of broker to connect to (default amqp://127.0.0.1:5672)",
@@ -109,6 +115,13 @@ namespace ClientLib
                 (bool connSSLVerifyPeer) => { this.ConnSSLVerifyPeer = connSSLVerifyPeer; });
             this.Add("conn-ssl-verify-peer-name=", "Verifies connection url against server hostname",
                 (bool connSSLVerifyPeerName) => { this.ConnSSLVerifyPeerName = connSSLVerifyPeerName; });
+            this.Add("conn-reconnect=", "Client reconnect settings (default true)",
+                (bool connReconnect) => { this.ConnReconnect = connReconnect; });
+            this.Add("conn-reconnect-interval=",
+                     "Client reconnect interval in seconds (default 10ms), Note: change of client timeout might be desired (default 1s)",
+                (float connReconnectInterval) => { this.ConnReconnectInterval = connReconnectInterval*1000; });
+            this.Add("conn-reconnect-limit=", "Client reconnect limit (default no limit)",
+                (int connReconnectLimit) => { this.ConnReconnectLimit = connReconnectLimit; });
         }
     }
 
@@ -212,7 +225,8 @@ namespace ClientLib
 
             this.Add("duration=", "message actions total duration",
                 (int duration) => { this.Duration = duration; });
-            this.Add("duration-mode=", "specifies where to wait; following values are supported: before-receive, after-receive-before-tx-action,after-receive-after-tx-action",
+            this.Add("duration-mode=",
+		     "specifies where to wait; following values are supported: before-receive, after-receive-before-tx-action, after-receive-after-tx-action",
                 (string logLib) => { this.LogLib = logLib; });
             this.Add("tx-size=", "transactional mode: batch message count size negative skips tx-action before exit",
                 (int txSize) => { this.TxSize = txSize; });
