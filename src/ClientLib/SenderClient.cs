@@ -19,8 +19,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Transactions;
 
-using Apache.Qpid.Proton.Client;
 using Apache.Qpid.Proton.Types.Messaging;
+using Apache.Qpid.Proton.Client;
+using SendOptions = Apache.Qpid.Proton.Client.SenderOptions;
 
 namespace ClientLib
 {
@@ -142,7 +143,8 @@ namespace ClientLib
         /// <returns>built sender link</returns>
         private ISender PrepareSender(SenderOptions options)
         {
-            Apache.Qpid.Proton.Client.SenderOptions SenderOptions = new Apache.Qpid.Proton.Client.SenderOptions();
+            string addr;
+            SendOptions SenderOptions = new SendOptions();
             if (!options.isInfinitySending) {
                 SenderOptions.SendTimeout = options.Timeout;
             }
@@ -156,11 +158,17 @@ namespace ClientLib
 
             bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
+            if (this.address != null) {
+                addr = this.address;
+	    } else {
+		addr = options.Address;
+	    }
+
             ISender sender;
             if (txBatchFlag) {
-                sender = this.session.OpenSender(options.Address, SenderOptions);
+                sender = this.session.OpenSender(addr, SenderOptions);
             } else {
-                sender = this.connection.OpenSender(options.Address, SenderOptions);
+                sender = this.connection.OpenSender(addr, SenderOptions);
             }
             return sender;
         }
