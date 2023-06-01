@@ -153,7 +153,7 @@ namespace ClientLib
             if (!options.isInfinitySending)
                 SenderOptions.SendTimeout = options.Timeout;
 
-            if (!options.AutoSettle.Equals(true))
+            if (options.AutoSettleOff.Equals(true))
                 SenderOptions.AutoSettle = false;
             if (options.Settlement.Equals(SettlementMode.AtLeastOnce))
                 SenderOptions.DeliveryMode = DeliveryMode.AtLeastOnce;
@@ -273,7 +273,7 @@ namespace ClientLib
 
                 ITracker tracker = sender.Send(message);
                 tracker.AwaitSettlement();
-		if (!options.AutoSettle.Equals(true))
+		if (options.AutoSettleOff.Equals(true))
                     tracker.Settle();
 
                 if ((options.Duration > 0) && ((options.DurationMode == "after-send-before-tx-action") ||

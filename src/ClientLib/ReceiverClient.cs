@@ -63,7 +63,7 @@ namespace ClientLib
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
             if (!String.IsNullOrEmpty(options.Action))
                 receiverOptions.AutoAccept = false;
-            if (!options.AutoSettle.Equals(true))
+            if (options.AutoSettleOff.Equals(true))
                 receiverOptions.AutoSettle = false;
 
             if (options.Settlement.Equals(SettlementMode.AtLeastOnce))
@@ -105,7 +105,7 @@ namespace ClientLib
         /// <param name="delivery">delivery object</param>
         /// <param name="action">acknowlegde action (accept, reject, release, noack)</param>
         /// <returns>null</returns>
-        private void DeliveryAcknowledge(IDelivery delivery, string action, bool autoSettle)
+        private void DeliveryAcknowledge(IDelivery delivery, string action, bool autoSettleOff)
         {
             if (action.ToLower().Equals("reject"))
                 delivery.Reject("test-condition", "test-description");
@@ -113,7 +113,7 @@ namespace ClientLib
                 delivery.Release();
             else if (!action.ToLower().Equals("noack"))
                 delivery.Accept();
-	    else if (!autoSettle.Equals(true))
+	    else if (autoSettleOff.Equals(true))
 		delivery.Settle();
         }
         #endregion
@@ -145,7 +145,7 @@ namespace ClientLib
                         message = delivery.Message();
 
 		        if (!String.IsNullOrEmpty(options.Action))
-		            DeliveryAcknowledge(delivery, options.Action, options.AutoSettle);
+		            DeliveryAcknowledge(delivery, options.Action, options.AutoSettleOff);
 
                         if (message != null)
                         {
@@ -216,7 +216,7 @@ namespace ClientLib
                 IMessage<object> message = delivery.Message();
 
 		if (!String.IsNullOrEmpty(options.Action))
-		    DeliveryAcknowledge(delivery, options.Action, options.AutoSettle);
+		    DeliveryAcknowledge(delivery, options.Action, options.AutoSettleOff);
 
                 Formatter.LogMessage(message, options);
                 nReceived++;
