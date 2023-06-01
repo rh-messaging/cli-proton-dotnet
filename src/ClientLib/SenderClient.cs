@@ -40,8 +40,12 @@ namespace ClientLib
         {
             object content = String.Empty;
 
-            if (!(String.IsNullOrEmpty(options.Content)))
-                content = options.Content;
+            if (!(String.IsNullOrEmpty(options.Content))) {
+                if (options.Content.Contains("{0}"))
+                    content = String.Format((string)options.Content, indexOfMessage);
+                else
+                    content = options.Content;
+            }
             else if (options.ListContent.Count > 0)
                 content = options.ListContent;
             else if (options.MapContent.Count > 0)
