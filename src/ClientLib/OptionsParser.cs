@@ -213,6 +213,7 @@ namespace ClientLib
         public string TxAction { get; protected set; }
         public string TxLoopendAction { get; protected set; }
         public int Capacity { get; private set; }
+        public bool AutoSettleOff { get; private set; }
 
         public SenderReceiverOptions() : base()
         {
@@ -222,11 +223,12 @@ namespace ClientLib
             this.TxAction = "commit";
             this.TxLoopendAction = String.Empty;
             this.Capacity = -1;
+            this.AutoSettleOff = false;
 
             this.Add("duration=", "message actions total duration",
                 (int duration) => { this.Duration = duration; });
             this.Add("duration-mode=",
-		     "specifies where to wait; following values are supported: before-receive, after-receive-before-tx-action, after-receive-after-tx-action",
+                     "specifies where to wait; following values are supported: before-receive, after-receive-before-tx-action, after-receive-after-tx-action",
                 (string logLib) => { this.LogLib = logLib; });
             this.Add("tx-size=", "transactional mode: batch message count size negative skips tx-action before exit",
                 (int txSize) => { this.TxSize = txSize; });
@@ -236,9 +238,9 @@ namespace ClientLib
                 (string txEndloopAction) => { this.TxLoopendAction = txEndloopAction; });
             this.Add("capacity=", "set link's capacity",
                 (int capacity) => { this.Capacity = capacity; });
-
+            this.Add("auto-settle-off=", "automatically settle deliveries",
+                (bool autoSettleOff) => { this.AutoSettleOff = autoSettleOff; });
         }
-
     }
 
     /// <summary>
