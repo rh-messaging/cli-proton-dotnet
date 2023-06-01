@@ -63,6 +63,8 @@ namespace ClientLib
                 receiverOptions.SourceOptions.DistributionMode = DistributionMode.Copy;
             if (!String.IsNullOrEmpty(options.Action))
                 receiverOptions.AutoAccept = false;
+            if (!options.AutoSettle.Equals(true))
+                receiverOptions.AutoSettle = false;
 
             if (options.Settlement.Equals(SettlementMode.AtLeastOnce))
                 receiverOptions.DeliveryMode = DeliveryMode.AtLeastOnce;
@@ -103,7 +105,7 @@ namespace ClientLib
         /// <param name="delivery">delivery object</param>
         /// <param name="action">acknowlegde action (accept, reject, release, noack)</param>
         /// <returns>null</returns>
-        private void DeliveryAcknowledge(IDelivery delivery, string action)
+        private void DeliveryAcknowledge(IDelivery delivery, string action, bool autoSettle)
         {
             if (action.ToLower().Equals("reject"))
                 delivery.Reject("test-condition", "test-description");
@@ -111,6 +113,8 @@ namespace ClientLib
                 delivery.Release();
             else if (!action.ToLower().Equals("noack"))
                 delivery.Accept();
+	    else if (!autoSettle.Equals(true))
+		delivery.Settle();
         }
         #endregion
 
@@ -141,7 +145,7 @@ namespace ClientLib
                         message = delivery.Message();
 
 		        if (!String.IsNullOrEmpty(options.Action))
-		            DeliveryAcknowledge(delivery, options.Action);
+		            DeliveryAcknowledge(delivery, options.Action, options.AutoSettle);
 
                         if (message != null)
                         {
@@ -212,7 +216,7 @@ namespace ClientLib
                 IMessage<object> message = delivery.Message();
 
 		if (!String.IsNullOrEmpty(options.Action))
-		    DeliveryAcknowledge(delivery, options.Action);
+		    DeliveryAcknowledge(delivery, options.Action, options.AutoSettle);
 
                 Formatter.LogMessage(message, options);
                 nReceived++;

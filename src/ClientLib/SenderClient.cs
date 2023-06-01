@@ -46,6 +46,7 @@ namespace ClientLib
                 else
                     content = options.Content;
             }
+
             else if (options.ListContent.Count > 0)
                 content = options.ListContent;
             else if (options.MapContent.Count > 0)
@@ -149,10 +150,11 @@ namespace ClientLib
         {
             string addr;
             SendOptions SenderOptions = new SendOptions();
-            if (!options.isInfinitySending) {
+            if (!options.isInfinitySending)
                 SenderOptions.SendTimeout = options.Timeout;
-            }
 
+            if (!options.AutoSettle.Equals(true))
+                SenderOptions.AutoSettle = false;
             if (options.Settlement.Equals(SettlementMode.AtLeastOnce))
                 SenderOptions.DeliveryMode = DeliveryMode.AtLeastOnce;
             else if (options.Settlement.Equals(SettlementMode.AtMostOnce))
@@ -162,18 +164,17 @@ namespace ClientLib
 
             bool txBatchFlag = String.IsNullOrEmpty(options.TxLoopendAction) ? (options.TxSize > 0) : true;
 
-            if (this.address != null) {
+            if (this.address != null)
                 addr = this.address;
-	    } else {
+	    else
 		addr = options.Address;
-	    }
 
             ISender sender;
-            if (txBatchFlag) {
+            if (txBatchFlag)
                 sender = this.session.OpenSender(addr, SenderOptions);
-            } else {
+            else
                 sender = this.connection.OpenSender(addr, SenderOptions);
-            }
+
             return sender;
         }
         #endregion
@@ -272,6 +273,8 @@ namespace ClientLib
 
                 ITracker tracker = sender.Send(message);
                 tracker.AwaitSettlement();
+		if (!options.AutoSettle.Equals(true))
+                    tracker.Settle();
 
                 if ((options.Duration > 0) && ((options.DurationMode == "after-send-before-tx-action") ||
                         (options.DurationMode == "after-send-after-tx-action")))
