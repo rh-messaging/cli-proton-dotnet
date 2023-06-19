@@ -7,7 +7,7 @@ ARG IMAGE_BUILD=registry.access.redhat.com/ubi${UBI_VERSION}/dotnet-${DOTNET_VER
 ARG IMAGE_BASE=registry.access.redhat.com/ubi${UBI_VERSION}/dotnet-${DOTNET_VERSION}-runtime:${UBI_RUNTIME_TAG}
 
 #DEV FROM $IMAGE_BUILD AS build
-FROM --platform=$BUILDPLATFORM registry.access.redhat.com/ubi8/dotnet-60:6.0-29 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 USER root
 COPY . /src
@@ -18,17 +18,12 @@ RUN dotnet publish -c Release -o /publish
 RUN echo "package info:("$(dotnet list cli-proton-dotnet.sln package)")" >> /publish/VERSION.txt
 
 #DEV FROM $IMAGE_BASE
-FROM --platform=$TARGETPLATFORM registry.access.redhat.com/ubi8/dotnet-70-runtime:7.0-14
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 
 LABEL name="Red Hat Messaging QE - Proton Dotnet CLI Image" \
       run="podman run --rm -ti <image_name:tag> /bin/bash cli-proton-dotnet-*"
 
 USER root
-
-# install fallocate for use by claire tests
-RUN microdnf -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs install \
-    util-linux \
-    && microdnf clean all -y
 
 RUN mkdir /licenses
 COPY ./LICENSE /licenses/LICENSE.txt
