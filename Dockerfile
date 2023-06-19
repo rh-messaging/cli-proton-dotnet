@@ -28,7 +28,7 @@ RUN dotnet publish --no-build --self-contained false -c Release -o /publish
 RUN echo "package info:("$(dotnet list cli-proton-dotnet.sln package)")" >> /publish/VERSION.txt
 
 #DEV FROM $IMAGE_BASE
-#FROM quay.io/fedora/fedora:38
+FROM quay.io/fedora/fedora:38
 
 LABEL name="Red Hat Messaging QE - Proton Dotnet CLI Image" \
       run="podman run --rm -ti <image_name:tag> /bin/bash cli-proton-dotnet-*"
