@@ -1,13 +1,13 @@
 # Arguments for DEV's (comment static FROM and uncomnnet #DEV ones)
 ARG UBI_VERSION=8
-ARG DOTNET_VERSION=60
+ARG DOTNET_VERSION=70
 ARG UBI_BUILD_TAG=latest
 ARG UBI_RUNTIME_TAG=latest
 ARG IMAGE_BUILD=registry.access.redhat.com/ubi${UBI_VERSION}/dotnet-${DOTNET_VERSION}:${UBI_TAG}
 ARG IMAGE_BASE=registry.access.redhat.com/ubi${UBI_VERSION}/dotnet-${DOTNET_VERSION}-runtime:${UBI_RUNTIME_TAG}
 
 #DEV FROM $IMAGE_BUILD AS build
-FROM registry.access.redhat.com/ubi8/dotnet-60:6.0-29 AS build
+FROM registry.access.redhat.com/ubi8/dotnet-70:7.0-14 AS build
 
 USER root
 COPY . /src
@@ -18,7 +18,7 @@ RUN dotnet publish -c Release -o /publish
 RUN echo "package info:("$(dotnet list cli-proton-dotnet.sln package)")" >> /publish/VERSION.txt
 
 #DEV FROM $IMAGE_BASE
-FROM registry.access.redhat.com/ubi8/dotnet-60-runtime:6.0-29
+FROM registry.access.redhat.com/ubi8/dotnet-70-runtime:7.0-14
 
 LABEL name="Red Hat Messaging QE - Proton Dotnet CLI Image" \
       run="podman run --rm -ti <image_name:tag> /bin/bash cli-proton-dotnet-*"
