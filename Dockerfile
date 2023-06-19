@@ -22,7 +22,8 @@ WORKDIR /src
 RUN dnf install -y findutils sed
 RUN find -name '*.csproj' -exec sed -i 's|<TargetFramework>net6.0</TargetFramework>|<TargetFramework>net7.0</TargetFramework>|' {} \;
 
-RUN dotnet publish --self-contained false -c Release -o /publish
+RUN dotnet build -c Release
+RUN dotnet publish --no-build --self-contained false -c Release -o /publish
 
 RUN echo "package info:("$(dotnet list cli-proton-dotnet.sln package)")" >> /publish/VERSION.txt
 
