@@ -26,7 +26,7 @@ LABEL name="Red Hat Messaging QE - Proton Dotnet CLI Image" \
 USER root
 
 # install fallocate for use by claire tests
-RUN dnf -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs install \
+RUN microdnf -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs install \
     util-linux \
     && dnf clean all -y
 
