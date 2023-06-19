@@ -35,8 +35,8 @@ jobs:
         with:
           image: ${{ env.IMAGE_NAME }}
           tags: latest ${{ github.sha }} ${{ steps.cleaned_ref_name.outputs.ref_name }}
-          # skip arm64 because of https://github.com/dotnet/sdk/issues/29892
-          archs: amd64, ppc64le, s390x
+          # consider skipping arm64 because of https://github.com/dotnet/sdk/issues/29892
+          archs: amd64, arm64, ppc64le, s390x
           containerfiles: |
             ./Dockerfile
 
