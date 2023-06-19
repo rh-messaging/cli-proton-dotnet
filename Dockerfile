@@ -28,7 +28,7 @@ USER root
 # install fallocate for use by claire tests
 RUN microdnf -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs install \
     util-linux \
-    && dnf clean all -y
+    && microdnf clean all -y
 
 RUN mkdir /licenses
 COPY ./LICENSE /licenses/LICENSE.txt
