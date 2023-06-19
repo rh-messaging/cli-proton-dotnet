@@ -15,6 +15,10 @@ USER root
 COPY . /src
 WORKDIR /src
 
+# https://community.ibm.com/community/user/powerdeveloper/blogs/alhad-deshpande/2023/01/13/identityserver-sqlite-db-on-net-7
+RUN dnf install -y findutils sed
+RUN find -name '*.csproj' -exec sed -i 's|<TargetFramework>net6.0</TargetFramework>|<TargetFramework>net7.0</TargetFramework>|' {} \;
+
 RUN dotnet publish -c Release -o /publish
 
 RUN echo "package info:("$(dotnet list cli-proton-dotnet.sln package)")" >> /publish/VERSION.txt
@@ -26,7 +30,7 @@ LABEL name="Red Hat Messaging QE - Proton Dotnet CLI Image" \
       run="podman run --rm -ti <image_name:tag> /bin/bash cli-proton-dotnet-*"
 
 USER root
-RUN dnf install -y dotnet-runtime-7.0
+RUN dnf install -y dotnet-runtime-7.0 && dnf clean all
 
 RUN mkdir /licenses
 COPY ./LICENSE /licenses/LICENSE.txt
@@ -46,6 +50,3 @@ VOLUME /var/lib/cli-proton-dotnet
 WORKDIR /var/lib/cli-proton-dotnet
 
 CMD ["/bin/bash"]
-
-# https://learn.microsoft.com/en-us/dotnet/core/runtime-discovery/troubleshoot-app-launch#configure-roll-forward-behavior
-ENV DOTNET_ROLL_FORWARD=major
