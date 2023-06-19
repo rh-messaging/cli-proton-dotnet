@@ -7,7 +7,10 @@ ARG IMAGE_BUILD=registry.access.redhat.com/ubi${UBI_VERSION}/dotnet-${DOTNET_VER
 ARG IMAGE_BASE=registry.access.redhat.com/ubi${UBI_VERSION}/dotnet-${DOTNET_VERSION}-runtime:${UBI_RUNTIME_TAG}
 
 #DEV FROM $IMAGE_BUILD AS build
-FROM quay.io/fedora/fedora:38 AS build
+FROM --platform=linux/amd64 quay.io/fedora/fedora:38-x86_64 AS build
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
+RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
 RUN dnf install -y dotnet-sdk-7.0
 
@@ -19,12 +22,12 @@ WORKDIR /src
 RUN dnf install -y findutils sed
 RUN find -name '*.csproj' -exec sed -i 's|<TargetFramework>net6.0</TargetFramework>|<TargetFramework>net7.0</TargetFramework>|' {} \;
 
-RUN dotnet publish -c Release -o /publish
+RUN dotnet publish --self-contained false -c Release -o /publish
 
 RUN echo "package info:("$(dotnet list cli-proton-dotnet.sln package)")" >> /publish/VERSION.txt
 
 #DEV FROM $IMAGE_BASE
-FROM quay.io/fedora/fedora:38
+#FROM quay.io/fedora/fedora:38
 
 LABEL name="Red Hat Messaging QE - Proton Dotnet CLI Image" \
       run="podman run --rm -ti <image_name:tag> /bin/bash cli-proton-dotnet-*"
