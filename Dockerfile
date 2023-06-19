@@ -48,3 +48,6 @@ VOLUME /var/lib/cli-proton-dotnet
 WORKDIR /var/lib/cli-proton-dotnet
 
 CMD ["/bin/bash"]
+
+# https://learn.microsoft.com/en-us/dotnet/core/runtime-discovery/troubleshoot-app-launch#configure-roll-forward-behavior
+ENV DOTNET_ROLL_FORWARD=major
