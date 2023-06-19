@@ -18,7 +18,7 @@ RUN dotnet publish -c Release -o /publish
 RUN echo "package info:("$(dotnet list cli-proton-dotnet.sln package)")" >> /publish/VERSION.txt
 
 #DEV FROM $IMAGE_BASE
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/runtime:7.0
 
 LABEL name="Red Hat Messaging QE - Proton Dotnet CLI Image" \
       run="podman run --rm -ti <image_name:tag> /bin/bash cli-proton-dotnet-*"
