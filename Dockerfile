@@ -15,7 +15,7 @@ WORKDIR /src
 
 # https://community.ibm.com/community/user/powerdeveloper/blogs/alhad-deshpande/2023/01/13/identityserver-sqlite-db-on-net-7
 RUN microdnf install -y findutils sed
-RUN find -name '*.csproj' -exec sed -i 's|<TargetFramework>net6.0</TargetFramework>|<TargetFramework>net7.0</TargetFramework>|' {} \;
+RUN find -name '*.csproj' -exec sed -i 's|<TargetFramework>net8.0</TargetFramework>|<TargetFramework>net7.0</TargetFramework>|' {} \;
 
 RUN dotnet build -c Release
 RUN dotnet publish --no-build --self-contained false -c Release -o /publish
